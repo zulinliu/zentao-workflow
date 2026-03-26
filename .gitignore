@@ -43,3 +43,8 @@ Thumbs.db
 chandao-data/
 chandao-data-*/
 attachments/
+
+# Development only (only in dev branch, not merged to main)
+# CLAUDE.md - development guide, stays in dev branch
+# .release-ignore - packaging exclude list
+# references/*.md - detailed guides for development

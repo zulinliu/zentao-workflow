@@ -5,33 +5,39 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.0] - 2026-03-26
+## [Unreleased]
+
+### Added
+
+- 自动化发版流程（GitHub Actions）
+- 项目管理和发版规范文档
+
+## [1.0.0] - 2025-03-26
 
 ### Added
 
 - Initial release of zentao-workflow skill
-- Dual runtime support (Java 8+ and Python 3.6+)
-- Automatic environment detection and runtime selection
-- Interactive Zentao server configuration
-- Download stories, tasks, and bugs with attachments
-- Download embedded images in content
-- Generate development technical solution documents
-- Cross-platform support (Windows, macOS, Linux)
-- Java project analysis guide
-- React project analysis guide
-- Technical plan template
+- 双运行时支持（Java 8+ 和 Python 3.6+）
+- 自动环境检测和运行时选择
+- 交互式禅道服务器配置
+- 下载需求/任务/Bug 及附件
+- 下载内容中嵌入的图片
+- 生成开发技术方案文档
+- 跨平台支持（Windows、macOS、Linux）
+- Java 项目分析指南
+- React 项目分析指南
+- 技术方案模板
 
 ### Features
 
-- **Smart Triggering**: Automatically activates on keywords like "禅道", "需求", "任务", "Bug"
-- **Dual Runtime**: Built-in Java and Python versions, auto-selects best runtime
-- **Attachment Download**: Downloads all attachments and embedded images
-- **Technical Solution**: Generates detailed development plans based on project code analysis
-- **Cross-Platform**: Works on Windows, macOS, and Linux
+- **智能触发**: 当提到"禅道"、"需求"、"任务"、"Bug"等关键词时自动激活
+- **双运行时**: 内置 Java 和 Python 版本，自动选择最佳运行时（Java > Python）
+- **附件下载**: 下载所有附件和嵌入图片
+- **技术方案**: 基于项目代码分析生成详细开发方案
+- **跨平台**: 支持 Windows、macOS、Linux
 
 ### Technical Details
 
-- Java version: Built with Maven, requires Java 8+
-- Python version: Pure Python with requests library
-- Markdown export with proper relative paths for attachments
-- Correct path handling: `../attachments/{type}/{id}/` format
+- Java 版本: Maven 构建，需要 Java 8+
+- Python 版本: 纯 Python + requests 库
+- Markdown 导出，附件使用相对路径: `../attachments/{type}/{id}/`

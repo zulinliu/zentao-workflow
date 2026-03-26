@@ -96,13 +96,51 @@ pip3 install requests
 
 检查配置文件 `~/.chandao/config.properties` 是否存在。
 
-**如果配置不存在**，使用 AskUserQuestion 工具收集：
+**如果配置不存在**，**必须主动使用 AskUserQuestion 工具一次性收集所有配置信息**：
+
+```
+AskUserQuestion:
+  questions:
+    - question: "请输入禅道服务器地址"
+      header: "服务器"
+      options:
+        - label: "跳过配置"
+          description: "稍后手动配置"
+        - label: "(Other)"
+          description: "输入完整地址，如 https://zentao.example.com"
+
+    - question: "请输入禅道登录用户名"
+      header: "用户名"
+      options:
+        - label: "跳过"
+          description: "稍后配置"
+        - label: "(Other)"
+          description: "输入您的登录账号"
+
+    - question: "请输入禅道登录密码"
+      header: "密码"
+      options:
+        - label: "跳过"
+          description: "稍后配置"
+        - label: "(Other)"
+          description: "输入您的登录密码"
+
+    - question: "禅道内容存储目录（可选）"
+      header: "存储目录"
+      options:
+        - label: "使用当前目录"
+          description: "默认使用工作区根目录"
+        - label: "(Other)"
+          description: "输入自定义路径"
+```
+
+**配置项说明**：
 
 | 配置项 | 必填 | 说明 |
 |--------|------|------|
 | 禅道服务器地址 | 是 | 如 https://zentao.example.com |
 | 用户名 | 是 | 登录账号 |
-| 密码 | 是 | 登录密码 |
+| 密码 | 是 | 登录密码或 API Token |
 | 存储目录 | 否 | 默认使用当前工作区根目录 |
 
 **保存配置**：使用 Bash 工具创建配置文件

@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.3] - 2025-03-26
+
+### Fixed
+- **用户交互一致性**：
+  - 配置已存在时也会询问确认存储目录
+  - 下载完成后必须使用 AskUserQuestion 询问用户是否开始设计
+  - 禁止下载完成后直接进入 Plan 模式
+
 ## [1.1.2] - 2025-03-26
 
 ### Fixed

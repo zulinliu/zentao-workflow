@@ -168,6 +168,23 @@ EOF
 配置已保存到 ~/.chandao/config.properties
 ```
 
+**如果配置已存在**：
+
+1. 读取并展示当前配置
+2. **必须**询问用户确认存储目录：
+
+```
+AskUserQuestion:
+  questions:
+    - question: "禅道内容存储目录（当前：{当前目录}）"
+      header: "存储目录"
+      options:
+        - label: "使用当前配置"
+          description: "保持现有目录设置"
+        - label: "(Other)"
+          description: "输入新的存储路径"
+```
+
 ### Step 3: 获取禅道内容
 
 **3.1 解析用户输入**
@@ -243,19 +260,25 @@ python3 "{SKILL_DIR}/scripts/chandao_fetch.py" -t {type} -i {id}
 
 ### Step 4: 开发技术方案设计
 
-**4.1 询问用户是否开始开发**
+**4.1 询问用户是否开始开发（必须执行）**
+
+**重要**：下载完成后，**必须**使用 AskUserQuestion 询问用户，**不能直接进入 Plan 模式**。
 
 ```
-需求内容已下载完成。是否开始设计开发技术方案？
-
-选项：
-- 是，开始设计技术方案
-- 否，仅下载内容（技能结束）
+AskUserQuestion:
+  questions:
+    - question: "需求内容已下载完成。是否开始设计开发技术方案？"
+      header: "下一步"
+      options:
+        - label: "是，开始设计"
+          description: "进入规划模式，分析项目代码并生成技术方案"
+        - label: "否，仅下载"
+          description: "技能结束，保留已下载的内容"
 ```
 
-**4.2 进入 Plan 模式**
+**如果用户选择"否"**：技能结束，展示下载的文件路径。
 
-如果用户确认，使用 EnterPlanMode 工具进入规划模式。
+**如果用户选择"是"**：继续 Step 4.2。
 
 **4.3 深度学习与分析**
 

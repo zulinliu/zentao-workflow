@@ -205,7 +205,7 @@ EOF
 
 **Java 版本**：
 ```bash
-java -jar {SKILL_DIR}/scripts/chandao-fetch.jar -t {type} -i {id}
+java -Dfile.encoding=UTF-8 -Dconsole.encoding=UTF-8 -jar {SKILL_DIR}/scripts/chandao-fetch.jar -t {type} -i {id}
 ```
 
 **Python 版本**：
@@ -216,6 +216,7 @@ python3 {SKILL_DIR}/scripts/chandao_fetch.py -t {type} -i {id}
 参数说明：
 - `{type}`: story / task / bug
 - `{id}`: 禅道 ID
+- `-Dfile.encoding=UTF-8`: 确保跨平台中文显示正常
 
 **下载完成后展示**：
 

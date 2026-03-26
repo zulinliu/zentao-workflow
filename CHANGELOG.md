@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.2] - 2025-03-26
+
+### Fixed
+- 修正 SKILL.md 中 Python 脚本路径为 `scripts/chandao_fetch.py`
+- 添加 Windows/Linux/macOS 跨平台路径处理说明
+- 强调使用双引号包裹路径避免空格问题
+
 ## [1.1.1] - 2025-03-26
 
 ### Fixed

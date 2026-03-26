@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - main
-    tags:
-      - 'v*'
 
 permissions:
   contents: write
@@ -22,28 +20,27 @@ jobs:
       - name: Get version
         id: version
         run: |
-          if [[ $GITHUB_REF == refs/tags/* ]]; then
-            VERSION=${GITHUB_REF#refs/tags/}
-          else
-            VERSION=$(cat VERSION)
-          fi
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "version_name=${VERSION#v}" >> $GITHUB_OUTPUT
+          VERSION=$(cat VERSION)
+          echo "version=v${VERSION}" >> $GITHUB_OUTPUT
+          echo "version_name=${VERSION}" >> $GITHUB_OUTPUT
 
       - name: Create release package
         run: |
           # 创建临时目录
           mkdir -p release_temp
 
-          # 复制需要打包的文件
-          cp -r SKILL.md release_temp/
+          # 只复制 SKILL 必须的文件
+          # 1. 技能主文件
+          cp SKILL.md release_temp/
+
+          # 2. 内置工具（Java + Python）
           cp -r scripts release_temp/
+
+          # 3. 模板资源
           cp -r assets release_temp/
+
+          # 4. 项目分析指南（SKILL.md 中引用的必须文件）
           cp -r references release_temp/
-          cp README.md release_temp/
-          cp LICENSE release_temp/
-          cp CHANGELOG.md release_temp/
-          cp VERSION release_temp/
 
           # 创建 zip 包
           cd release_temp
@@ -56,6 +53,11 @@ jobs:
           # 显示包内容
           echo "📦 Release package contents:"
           unzip -l zentao-workflow-${{ steps.version.outputs.version }}.zip
+
+          # 显示包大小
+          echo ""
+          echo "📦 Package size:"
+          ls -lh zentao-workflow-${{ steps.version.outputs.version }}.zip
 
       - name: Generate release notes
         id: notes
@@ -77,24 +79,45 @@ jobs:
 
             ${{ steps.notes.outputs.notes }}
 
+            ---
+
             ## 快速安装
+
+            **方法一：直接下载（推荐）**
 
             1. 下载下方的 `zentao-workflow-${{ steps.version.outputs.version }}.zip`
             2. 解压到 Claude Code 技能目录：
-               ```bash
-               # Linux/macOS
-               unzip zentao-workflow-${{ steps.version.outputs.version }}.zip -d ~/.claude/skills/zentao-workflow
 
-               # Windows PowerShell
-               Expand-Archive zentao-workflow-${{ steps.version.outputs.version }}.zip -DestinationPath $env:USERPROFILE\.claude\skills\zentao-workflow
-               ```
+            ```bash
+            # Linux/macOS
+            mkdir -p ~/.claude/skills/zentao-workflow
+            unzip zentao-workflow-${{ steps.version.outputs.version }}.zip -d ~/.claude/skills/zentao-workflow
+
+            # Windows PowerShell
+            New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.claude\skills\zentao-workflow"
+            Expand-Archive zentao-workflow-${{ steps.version.outputs.version }}.zip -DestinationPath "$env:USERPROFILE\.claude\skills\zentao-workflow"
+            ```
+
             3. 重启 Claude Code 即可使用
+
+            **方法二：查看完整文档**
+
+            访问 [GitHub 仓库](https://github.com/zulinliu/zentao-workflow) 查看完整使用文档。
 
             ## 环境要求
 
             只需满足以下**任一**环境：
             - Java 8+
             - Python 3.6+
+
+            ## 包内容
+
+            | 文件/目录 | 说明 |
+            |-----------|------|
+            | `SKILL.md` | 技能主文件 |
+            | `scripts/` | 内置工具（Java jar + Python） |
+            | `assets/` | 模板资源（配置模板、技术方案模板） |
+            | `references/` | 项目分析指南（Java/React） |
 
           files: |
             zentao-workflow-${{ steps.version.outputs.version }}.zip

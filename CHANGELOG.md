@@ -7,10 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
+## [1.1.0] - 2025-03-26
 
-- 自动化发版流程（GitHub Actions）
+### Added
+- GitHub Actions 自动发版工作流
+- 发布包包含 `zentao-workflow/` 目录层，解压即用
 - 项目管理和发版规范文档
+
+### Fixed
+- 修复 HTML 转 Markdown 问题，支持完整标签转换（h1-h6、p、ul、ol、li、strong、em、code、a 等）
+- 修复禅道配置初始化流程，一次性主动收集所有配置信息
+- 处理 HTML 实体（&nbsp;、&lt;、&gt; 等）
 
 ## [1.0.0] - 2025-03-26
 

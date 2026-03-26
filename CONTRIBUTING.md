@@ -143,6 +143,26 @@ git push origin feature/xxx
 
 ## 文件管理规则
 
+### SKILL 必须文件（打包到 release）
+
+| 文件/目录 | 说明 | 必须性 |
+|-----------|------|--------|
+| `SKILL.md` | 技能主文件 | **必须** |
+| `scripts/` | 内置工具（Java jar + Python） | **必须** |
+| `assets/` | 模板资源 | **必须** |
+| `references/` | 项目分析指南（Java/React） | **必须** |
+
+### 排除文件（不打包到 release）
+
+| 文件 | 说明 | 原因 |
+|------|------|------|
+| `README.md` | 用户文档 | 用户不需要加载到上下文 |
+| `LICENSE` | 许可证 | 用户不需要加载到上下文 |
+| `CHANGELOG.md` | 变更日志 | 用户不需要加载到上下文 |
+| `VERSION` | 版本号 | 用户不需要加载到上下文 |
+| `CLAUDE.md` | 开发指南 | 仅开发使用 |
+| `CONTRIBUTING.md` | 贡献指南 | 仅开发使用 |
+
 ### 分支专属文件
 
 | 文件 | dev 分支 | main 分支 | 说明 |

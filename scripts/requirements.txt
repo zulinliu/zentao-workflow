@@ -1,0 +1,4 @@
+# 禅道数据抓取工具 - Python依赖
+# 仅需要 requests 库，无其他外部依赖
+
+requests>=2.28.0

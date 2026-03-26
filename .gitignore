@@ -48,3 +48,6 @@ attachments/
 # CLAUDE.md - development guide, stays in dev branch
 # .release-ignore - packaging exclude list
 # references/*.md - detailed guides for development
+
+# 临时开发目录
+tsintergy-chandao-fetch/

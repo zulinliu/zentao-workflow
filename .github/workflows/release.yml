@@ -1,0 +1,102 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get version
+        id: version
+        run: |
+          if [[ $GITHUB_REF == refs/tags/* ]]; then
+            VERSION=${GITHUB_REF#refs/tags/}
+          else
+            VERSION=$(cat VERSION)
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "version_name=${VERSION#v}" >> $GITHUB_OUTPUT
+
+      - name: Create release package
+        run: |
+          # 创建临时目录
+          mkdir -p release_temp
+
+          # 复制需要打包的文件
+          cp -r SKILL.md release_temp/
+          cp -r scripts release_temp/
+          cp -r assets release_temp/
+          cp -r references release_temp/
+          cp README.md release_temp/
+          cp LICENSE release_temp/
+          cp CHANGELOG.md release_temp/
+          cp VERSION release_temp/
+
+          # 创建 zip 包
+          cd release_temp
+          zip -r ../zentao-workflow-${{ steps.version.outputs.version }}.zip .
+          cd ..
+
+          # 清理临时目录
+          rm -rf release_temp
+
+          # 显示包内容
+          echo "📦 Release package contents:"
+          unzip -l zentao-workflow-${{ steps.version.outputs.version }}.zip
+
+      - name: Generate release notes
+        id: notes
+        run: |
+          # 从 CHANGELOG.md 提取当前版本的变更记录
+          VERSION=${{ steps.version.outputs.version_name }}
+          NOTES=$(sed -n "/## \[$VERSION\]/,/## \[/p" CHANGELOG.md | sed '$d')
+          echo "notes<<EOF" >> $GITHUB_OUTPUT
+          echo "$NOTES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.version.outputs.version }}
+          name: Zentao Workflow Skill ${{ steps.version.outputs.version }}
+          body: |
+            ## 禅道开发工作流助手 ${{ steps.version.outputs.version }}
+
+            ${{ steps.notes.outputs.notes }}
+
+            ## 快速安装
+
+            1. 下载下方的 `zentao-workflow-${{ steps.version.outputs.version }}.zip`
+            2. 解压到 Claude Code 技能目录：
+               ```bash
+               # Linux/macOS
+               unzip zentao-workflow-${{ steps.version.outputs.version }}.zip -d ~/.claude/skills/zentao-workflow
+
+               # Windows PowerShell
+               Expand-Archive zentao-workflow-${{ steps.version.outputs.version }}.zip -DestinationPath $env:USERPROFILE\.claude\skills\zentao-workflow
+               ```
+            3. 重启 Claude Code 即可使用
+
+            ## 环境要求
+
+            只需满足以下**任一**环境：
+            - Java 8+
+            - Python 3.6+
+
+          files: |
+            zentao-workflow-${{ steps.version.outputs.version }}.zip
+          draft: false
+          prerelease: false

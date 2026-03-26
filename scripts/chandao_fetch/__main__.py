@@ -7,6 +7,7 @@
 """
 
 import argparse
+import os
 import sys
 from typing import List
 
@@ -82,8 +83,11 @@ def main():
     """主函数"""
     args = parse_args()
 
-    # 加载配置
-    config = ChandaoConfig.load(args.config)
+    # 确定工作区目录（用于查找工作区配置文件）
+    workspace_dir = args.output if args.output else os.getcwd()
+
+    # 加载配置（优先级：命令行指定 > 工作区配置 > 全局配置）
+    config = ChandaoConfig.load(workspace_dir=workspace_dir, config_path=args.config)
 
     # 命令行参数覆盖配置文件
     if args.url:
@@ -100,9 +104,10 @@ def main():
         print(config.get_init_prompt())
         sys.exit(1)
 
-    # 如果提供了新的凭据，自动保存配置
+    # 如果提供了新的凭据，保存配置
     if args.url or args.username or args.password:
-        config.save()
+        # 默认保存到工作区配置
+        config.save_to_workspace(workspace_dir)
 
     # 解析ID列表
     ids: List[int] = []

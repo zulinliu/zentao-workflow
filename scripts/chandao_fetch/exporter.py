@@ -177,25 +177,129 @@ class MarkdownExporter:
         return file_path
 
     def _process_content(self, content: str, attach_path: str) -> str:
-        """处理内容中的图片引用
+        """处理内容：将 HTML 转换为 Markdown
 
         Args:
-            content: 原始内容
-            attach_path: 附件相对路径 (如 attachments/bug/66445)
+            content: 原始内容（可能包含 HTML 标签）
+            attach_path: 附件相对路径 (如 ../attachments/bug/66445)
         """
         if not content:
             return ""
 
-        # 将禅道的图片引用转换为本地路径
-        # <img src="data/upload/xxx.jpg" /> -> ![](attachments/bug/66445/xxx.jpg)
+        result = content
+
+        # 1. 先处理图片标签（在 HTML 转换之前）
+        result = self._convert_img_tags(result, attach_path)
+
+        # 2. HTML 转 Markdown
+        result = self._html_to_markdown(result)
+
+        # 3. 清理多余的空行
+        result = re.sub(r'\n{3,}', '\n\n', result).strip()
+
+        return result
+
+    def _convert_img_tags(self, content: str, attach_path: str) -> str:
+        """转换图片标签为 Markdown 格式"""
+        if not content:
+            return ""
+
         pattern = r'<img[^>]+src="([^"]+)"[^>]*>'
 
         def replace_img(match):
             src = match.group(1)
             filename = src.split("/")[-1]
-            return f"![]({attach_path}/{filename})"
+            return f"\n\n![]({attach_path}/{filename})\n\n"
 
         return re.sub(pattern, replace_img, content)
+
+    def _html_to_markdown(self, html: str) -> str:
+        """将 HTML 转换为 Markdown"""
+        if not html:
+            return ""
+
+        result = html
+
+        # 标题转换 (h1-h6)
+        result = re.sub(r'<h1[^>]*>\s*', '\n\n# ', result, flags=re.IGNORECASE)
+        result = re.sub(r'<h2[^>]*>\s*', '\n\n## ', result, flags=re.IGNORECASE)
+        result = re.sub(r'<h3[^>]*>\s*', '\n\n### ', result, flags=re.IGNORECASE)
+        result = re.sub(r'<h4[^>]*>\s*', '\n\n#### ', result, flags=re.IGNORECASE)
+        result = re.sub(r'<h5[^>]*>\s*', '\n\n##### ', result, flags=re.IGNORECASE)
+        result = re.sub(r'<h6[^>]*>\s*', '\n\n###### ', result, flags=re.IGNORECASE)
+        result = re.sub(r'</h[1-6]>', '\n\n', result, flags=re.IGNORECASE)
+
+        # 段落
+        result = re.sub(r'<p[^>]*>\s*', '\n\n', result, flags=re.IGNORECASE)
+        result = re.sub(r'</p>', '\n\n', result, flags=re.IGNORECASE)
+
+        # 换行
+        result = re.sub(r'<br\s*/?>\s*', '\n', result, flags=re.IGNORECASE)
+        result = re.sub(r'<br[^>]*>', '\n', result, flags=re.IGNORECASE)
+
+        # 列表
+        result = re.sub(r'<ul[^>]*>\s*', '\n', result, flags=re.IGNORECASE)
+        result = re.sub(r'</ul>', '\n', result, flags=re.IGNORECASE)
+        result = re.sub(r'<ol[^>]*>\s*', '\n', result, flags=re.IGNORECASE)
+        result = re.sub(r'</ol>', '\n', result, flags=re.IGNORECASE)
+        result = re.sub(r'<li[^>]*>\s*', '- ', result, flags=re.IGNORECASE)
+        result = re.sub(r'</li>', '\n', result, flags=re.IGNORECASE)
+
+        # 强调
+        result = re.sub(r'<strong[^>]*>', '**', result, flags=re.IGNORECASE)
+        result = re.sub(r'</strong>', '**', result, flags=re.IGNORECASE)
+        result = re.sub(r'<b[^>]*>', '**', result, flags=re.IGNORECASE)
+        result = re.sub(r'</b>', '**', result, flags=re.IGNORECASE)
+        result = re.sub(r'<em[^>]*>', '*', result, flags=re.IGNORECASE)
+        result = re.sub(r'</em>', '*', result, flags=re.IGNORECASE)
+        result = re.sub(r'<i[^>]*>', '*', result, flags=re.IGNORECASE)
+        result = re.sub(r'</i>', '*', result, flags=re.IGNORECASE)
+
+        # 代码
+        result = re.sub(r'<code[^>]*>', '`', result, flags=re.IGNORECASE)
+        result = re.sub(r'</code>', '`', result, flags=re.IGNORECASE)
+        result = re.sub(r'<pre[^>]*>\s*', '\n\n```\n', result, flags=re.IGNORECASE)
+        result = re.sub(r'</pre>', '\n```\n', result, flags=re.IGNORECASE)
+
+        # 链接 <a href="url">text</a> -> [text](url)
+        result = re.sub(r'<a[^>]+href="([^"]+)"[^>]*>([^<]+)</a>', r'[\2](\1)', result, flags=re.IGNORECASE)
+
+        # 表格（简单处理）
+        result = re.sub(r'<table[^>]*>\s*', '\n\n', result, flags=re.IGNORECASE)
+        result = re.sub(r'</table>', '\n\n', result, flags=re.IGNORECASE)
+        result = re.sub(r'<tr[^>]*>\s*', '| ', result, flags=re.IGNORECASE)
+        result = re.sub(r'</tr>', ' |\n', result, flags=re.IGNORECASE)
+        result = re.sub(r'<td[^>]*>\s*', ' ', result, flags=re.IGNORECASE)
+        result = re.sub(r'</td>', ' |', result, flags=re.IGNORECASE)
+        result = re.sub(r'<th[^>]*>\s*', ' ', result, flags=re.IGNORECASE)
+        result = re.sub(r'</th>', ' |', result, flags=re.IGNORECASE)
+        result = re.sub(r'<thead[^>]*>\s*', '', result, flags=re.IGNORECASE)
+        result = re.sub(r'</thead>', '', result, flags=re.IGNORECASE)
+        result = re.sub(r'<tbody[^>]*>\s*', '', result, flags=re.IGNORECASE)
+        result = re.sub(r'</tbody>', '', result, flags=re.IGNORECASE)
+
+        # Span 和 div（移除标签，保留内容）
+        result = re.sub(r'<span[^>]*>', '', result, flags=re.IGNORECASE)
+        result = re.sub(r'</span>', '', result, flags=re.IGNORECASE)
+        result = re.sub(r'<div[^>]*>\s*', '\n', result, flags=re.IGNORECASE)
+        result = re.sub(r'</div>', '\n', result, flags=re.IGNORECASE)
+
+        # 移除其他未知标签，保留内容
+        result = re.sub(r'<[^>]+>', '', result)
+
+        # 处理 HTML 实体
+        result = result.replace('&nbsp;', ' ')
+        result = result.replace('&lt;', '<')
+        result = result.replace('&gt;', '>')
+        result = result.replace('&amp;', '&')
+        result = result.replace('&quot;', '"')
+        result = result.replace('&#39;', "'")
+
+        # 清理多余空行
+        result = re.sub(r'\n{3,}', '\n\n', result)
+        result = result.strip()
+
+        return result
 
     def _append_attachments(self, md: List[str], attachments: Optional[List[Attachment]], attach_path: str):
         """添加附件列表
@@ -203,7 +307,7 @@ class MarkdownExporter:
         Args:
             md: Markdown内容列表
             attachments: 附件列表
-            attach_path: 附件相对路径 (如 attachments/bug/66445)
+            attach_path: 附件相对路径 (如 ../attachments/bug/66445)
         """
         if not attachments:
             return

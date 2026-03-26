@@ -33,7 +33,7 @@ description: |
 | 工具 | 位置 | 运行时 |
 |------|------|--------|
 | Java版 | `{SKILL_DIR}/scripts/chandao-fetch.jar` | Java 8+ |
-| Python版 | `{SKILL_DIR}/scripts/chandao_fetch/` | Python 3.6+ |
+| Python版 | `{SKILL_DIR}/scripts/chandao_fetch.py` | Python 3.6+ |
 
 ## 执行步骤
 
@@ -201,22 +201,33 @@ EOF
 
 **3.4 执行下载**
 
-根据运行时选择执行命令：
+**重要**：路径格式需要适配操作系统：
+- **Windows**: 使用双引号包裹路径，正斜杠 `/` 或双反斜杠 `\\`
+- **Linux/macOS**: 直接使用正斜杠 `/`
 
 **Java 版本**：
 ```bash
-java -Dfile.encoding=UTF-8 -Dconsole.encoding=UTF-8 -jar {SKILL_DIR}/scripts/chandao-fetch.jar -t {type} -i {id}
+# Linux/macOS
+java -Dfile.encoding=UTF-8 -Dconsole.encoding=UTF-8 -jar "{SKILL_DIR}/scripts/chandao-fetch.jar" -t {type} -i {id}
+
+# Windows
+java -Dfile.encoding=UTF-8 -Dconsole.encoding=UTF-8 -jar "{SKILL_DIR}/scripts/chandao-fetch.jar" -t {type} -i {id}
 ```
 
 **Python 版本**：
 ```bash
-python3 {SKILL_DIR}/scripts/chandao_fetch.py -t {type} -i {id}
+# Linux/macOS
+python3 "{SKILL_DIR}/scripts/chandao_fetch.py" -t {type} -i {id}
+
+# Windows (注意：使用正斜杠或双反斜杠)
+python3 "{SKILL_DIR}/scripts/chandao_fetch.py" -t {type} -i {id}
 ```
 
 参数说明：
 - `{type}`: story / task / bug
 - `{id}`: 禅道 ID
 - `-Dfile.encoding=UTF-8`: 确保跨平台中文显示正常
+- 路径使用**双引号**包裹，避免空格问题
 
 **下载完成后展示**：
 

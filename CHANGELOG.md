@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.1] - 2025-03-26
+
+### Fixed
+- 修复 Windows 上 Java 日志中文乱码问题
+  - 更新 logback.xml 添加 UTF-8 编码
+  - Java 命令添加 `-Dfile.encoding=UTF-8` 参数
+
 ## [1.1.0] - 2025-03-26
 
 ### Added

@@ -17,12 +17,12 @@ This file provides guidance to Claude Code when working with code in this reposi
 ### Java 版本构建
 
 ```bash
-# 在源项目目录执行
-cd /home/liuzl/agent/tsintergy-chandao-fetch
+# 在 skill 目录的 java-src 中执行
+cd scripts/java-src
 mvn clean package -DskipTests
 
-# 复制 JAR 到 skill 目录
-cp target/chandao-fetch.jar scripts/
+# 复制 JAR 到 scripts 目录
+cp target/chandao-fetch.jar ../
 ```
 
 ### Python 版本测试

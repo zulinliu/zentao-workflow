@@ -48,3 +48,6 @@ Thumbs.db
 chandao-data/
 chandao-data-*/
 attachments/
+
+# Java 源码（release 只包含编译后的 JAR）
+scripts/java-src/

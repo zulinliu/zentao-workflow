@@ -1,11 +1,11 @@
 # Zentao Workflow Skill
 
-[![Version](https://img.shields.io/badge/version-1.4.1-blue.svg)](https://github.com/zulinliu/zentao-workflow)
+[![Version](https://img.shields.io/badge/version-1.5.0-blue.svg)](https://github.com/zulinliu/zentao-workflow)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-Skill-purple.svg)](https://claude.ai/code)
 [![Release](https://img.shields.io/github/release/zulinliu/zentao-workflow.svg)](https://github.com/zulinliu/zentao-workflow/releases)
 
-禅道开发工作流助手 - 自动化禅道需求/任务/Bug 下载与开发方案设计。
+禅道开发工作流助手 - 自动化禅道需求/任务/Bug 下载与技术实现方案设计。
 
 ## 快速安装
 
@@ -16,11 +16,11 @@
 ```bash
 # Linux/macOS
 cd ~/.claude/skills
-unzip ~/Downloads/zentao-workflow-v1.4.0.zip -d zentao-workflow
+unzip ~/Downloads/zentao-workflow-v1.5.0.zip -d zentao-workflow
 
 # Windows PowerShell
 cd $env:USERPROFILE\.claude\skills
-Expand-Archive $env:USERPROFILE\Downloads\zentao-workflow-v1.4.0.zip -DestinationPath zentao-workflow
+Expand-Archive $env:USERPROFILE\Downloads\zentao-workflow-v1.5.0.zip -DestinationPath zentao-workflow
 ```
 
 重启 Claude Code 即可使用。
@@ -48,37 +48,55 @@ cp -r zentao-workflow ~/.claude/skills/
 
 ## 环境要求
 
-只需满足以下**任一**环境：
+### 运行时（满足任一即可）
 
 | 运行时 | 版本要求 | 优先级 |
 |--------|----------|--------|
 | Java | 8+ | 高（优先使用） |
 | Python | 3.6+ | 中（默认备选） |
 
+### 技能依赖（v1.5.0 新增）
+
+| 依赖 | 版本要求 | 说明 |
+|------|----------|------|
+| superpowers 插件 | 5.0.6+ | 技术方案设计必需，如未安装会提示自动安装 |
+
 ## 功能特性
 
-### 核心功能
-- **智能触发** - 支持多种触发格式（`禅道需求39382`、`开发需求39382`、`39382需求` 等）
+- **智能触发** - 当提到"禅道"、"需求"、"任务"、"Bug"等关键词时自动激活
 - **双运行时支持** - 内置 Java 和 Python 两个版本，自动选择最佳运行时
 - **跨平台兼容** - 支持 Windows、macOS、Linux
+- **自动环境配置** - 无环境时可自动安装 Python
 - **交互式配置** - 引导用户完成禅道服务器配置
 - **附件完整下载** - 下载所有附件和内容中嵌入的图片
 
-### v1.4.0 新增功能
+### v1.5.0 重大更新
+
+- **集成 superpowers 技能链** - 技术方案设计效率提升 70%+
+  - 使用 `brainstorming` 技能进行需求分析和方案设计
+  - 使用 `subagent-driven-development` 技能执行编码任务
+  - 使用 `requesting-code-review` 技能进行代码评审
+- **合并架构方案和编码方案**
+  - 原两个独立阶段 → 合并为"技术实现方案设计"
+  - 消除重复探索，一次完成所有设计工作
+- **效率大幅提升**
+  - 代理数量减少 85%：12-17 个 → 1-2 个
+  - 简单需求耗时减少 70%：20+ 分钟 → 5-8 分钟
+
+<details>
+<summary>v1.4.x 历史功能</summary>
+
+### v1.4.0 功能
 - **方案质量自动评审**（可选）
-  - 架构方案/编码方案完成后可启动 3 个评审代理
-  - 评审角度：完整性检查、可行性检查、一致性检查
-  - 支持根据评审建议自动优化方案
 - **快速/深度模式选择**
-  - 快速模式：2-3 分钟完成，适合简单需求
-  - 深度模式：5-15 分钟完成，适合复杂需求
 - **多项目配置支持**
-  - 工作区配置优先，支持多项目并行开发
+
+</details>
 
 ## 快速开始
 
 ```
-你: 帮我开发禅道需求 39382
+你: 帮我下载禅道需求 38817
 
 Claude: [触发 zentao-workflow 技能]
         检测运行环境...
@@ -87,43 +105,22 @@ Claude: [触发 zentao-workflow 技能]
         首次使用需要配置禅道信息...
         ✓ 配置已完成
 
-        正在下载需求 39382...
+        正在下载需求 38817...
         ✓ 下载完成
-          - MD 文件: story/39382-需求标题.md
+          - MD 文件: story/38817-需求标题.md
           - 附件: 3 个文件已下载
           - 图片: 2 张图片已下载
 
-        是否开始设计架构方案？
-
-        [用户选择：是，开始设计]
-
-        请选择设计模式：
-        1. 快速模式（推荐）- 2-3分钟完成
-        2. 深度模式 - 5-15分钟完成
-
-        [用户选择：快速模式]
-
-        🚀 启动快速模式架构分析...
-        [✓] 阶段 1/4: 阅读禅道需求内容
-        [✓] 阶段 2/4: 查看附件和图片
-        [✓] 阶段 3/4: 探索项目代码
-        [✓] 阶段 4/4: 编写架构方案
-
-        ✓ 架构方案已完成
-          文件: story_39382_架构方案.md
-
-        是否启动自动评审检查方案质量？
+        是否开始设计开发技术方案？
 ```
 
 ### 支持的输入格式
 
 | 格式 | 示例 |
 |------|------|
-| 类型+ID | 需求39382、任务12345、Bug67890 |
-| ID+类型 | 39382需求、12345任务、67890Bug |
-| 前缀+类型+ID | 禅道需求39382、开发任务12345 |
-| 纯 ID | 39382 |
-| URL | https://zentao.example.com/story-view-39382.html |
+| 纯 ID | 38817 |
+| URL | https://zentao.example.com/story-view-38817.html |
+| 关键词+ID | 开发需求38817、任务12345 |
 
 ### 触发关键词
 
@@ -133,38 +130,25 @@ Claude: [触发 zentao-workflow 技能]
 - Bug、缺陷
 - 下载禅道、获取需求
 
-## 方案设计流程
+## 技术实现方案设计
 
-### 1. 架构方案设计
+v1.5.0 使用 `superpowers:brainstorming` 技能，一次完成所有设计工作。
 
-| 模式 | 耗时 | 代理数 | 输出内容 |
-|------|------|--------|----------|
-| 快速模式 | 2-3分钟 | 3个并行 | 核心架构设计、接口设计 |
-| 深度模式 | 5-15分钟 | 6个并行 | 完整架构分析、风险评估 |
+| 指标 | v1.4.x | v1.5.0 | 提升 |
+|------|--------|--------|------|
+| 设计阶段 | 2 个（架构+编码） | 1 个（技术实现方案） | 减少 50% |
+| 代理数量 | 12-17 个 | 1-2 个 | 减少 85%+ |
+| 简单需求耗时 | 20+ 分钟 | 5-8 分钟 | 减少 70%+ |
 
-**包含内容**：
-- 需求分析 - 需求背景、功能点拆解、验收标准
-- 技术设计 - 技术选型、架构设计、接口设计
-- 影响范围 - 涉及的模块和文件
+**技术实现方案包含**：
+1. **需求分析** - 背景、功能点拆解、验收标准
+2. **架构设计** - 技术选型、模块设计、接口设计
+3. **实现步骤** - 详细编码步骤（5-10 步）
 
-### 2. 编码方案设计
-
-| 模式 | 耗时 | 代理数 | 输出内容 |
-|------|------|--------|----------|
-| 快速模式 | 2-3分钟 | 3个并行 | 核心实现步骤、关键代码位置 |
-| 深度模式 | 5-10分钟 | 5个并行 | 详细步骤、伪代码、测试计划 |
-
-**包含内容**：
-- 实现步骤 - 详细的分步骤实现
-- 代码定位 - 需要修改的文件和位置
-- 测试计划 - 单元测试、集成测试设计
-
-### 3. 方案质量评审（可选）
-
-启动 3 个评审代理并行检查：
-1. **完整性检查** - 功能点覆盖、验收标准可验证性
-2. **可行性检查** - 技术选型合理性、风险识别
-3. **一致性检查** - 架构风格一致性、无破坏性改动
+**执行方式选择**：
+- **子代理驱动**（推荐）- 使用 `superpowers:subagent-driven-development`
+- **内联执行** - 使用 `superpowers:executing-plans`
+- **手动执行** - 保留方案，手动实现
 
 ## 输出文件结构
 
@@ -172,10 +156,7 @@ Claude: [触发 zentao-workflow 技能]
 {workspace}/
 ├── .chandao/
 │   └── config.properties          # 工作区配置（可选）
-├── story_39382_架构方案.md        # 架构方案文档
-├── story_39382_架构方案_评审.md   # 架构方案评审报告（如有）
-├── story_39382_编码方案.md        # 编码方案文档
-├── story_39382_编码方案_评审.md   # 编码方案评审报告（如有）
+├── story_39382_技术实现方案.md    # 技术实现方案文档（v1.5.0 新格式）
 ├── story/                         # 需求 Markdown 文件
 │   └── 39382-需求标题.md
 ├── task/                          # 任务 Markdown 文件
@@ -194,9 +175,9 @@ Claude: [触发 zentao-workflow 技能]
 
 技能会自动检测并提示安装。默认推荐安装 Python（更轻量）。
 
-### Q: 如何配置多项目支持？
+### Q: 如何修改已保存的配置？
 
-每个工作区可以有自己的 `.chandao/config.properties` 文件，优先级高于全局配置。
+编辑 `~/.chandao/config.properties` 文件。
 
 ### Q: 下载失败怎么办？
 
@@ -209,6 +190,8 @@ Claude: [触发 zentao-workflow 技能]
 
 | 版本 | 主要更新 |
 |------|----------|
+| 1.5.0 | 集成 superpowers 技能链、合并架构/编码方案、效率提升 70%+ |
+| 1.4.1 | 触发条件优化、Java 源码管理、文档同步 |
 | 1.4.0 | 方案质量自动评审、子代理数量优化 |
 | 1.3.0 | 多项目配置支持 |
 | 1.2.0 | 快速/深度模式选择、进度提示 |
@@ -227,4 +210,4 @@ Claude: [触发 zentao-workflow 技能]
 
 ---
 
-**版本**: 1.4.1 | **作者**: liuzl | **许可证**: MIT
+**版本**: 1.5.0 | **作者**: liuzl | **许可证**: MIT

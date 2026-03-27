@@ -1,6 +1,4 @@
-# 禅道数据抓取工具 (Chandao Fetch)
-
-从禅道系统下载任务、需求、Bug 详情到本地 Markdown 文件，支持图片和附件自动下载。
+禅道数据抓取工具 - zentao-workflow 技能内置组件。
 
 ## 功能特性
 
@@ -16,21 +14,17 @@
 - JDK 8 或更高版本
 - 网络可访问禅道服务器
 
-## 安装
+## 快速开始
 
-### 方式一：直接下载
+本工具是 [zentao-workflow](https://github.com/zulinliu/zentao-workflow) 技能的内置组件，通常无需单独使用。
 
-从 [Releases](https://github.com/zulinliu/tsintergy-chandao-fetch/releases) 页面下载最新版本。
-
-### 方式二：自行编译
+如需独立使用，请先构建 JAR：
 
 ```bash
-git clone https://github.com/zulinliu/tsintergy-chandao-fetch.git
-cd tsintergy-chandao-fetch
-mvn clean package
+cd scripts/java-src
+mvn clean package -DskipTests
+cp target/chandao-fetch.jar ../
 ```
-
-编译完成后，在 `target/` 目录下找到 `chandao-fetch.jar`。
 
 ## 快速开始
 
@@ -77,7 +71,7 @@ java -jar chandao-fetch.jar -t task -i 12345
 java -jar chandao-fetch.jar -t bug -i 67890
 ```
 
-## 命令行参数详解
+## 命令行参数
 
 | 参数 | 简写 | 说明 | 示例 |
 |------|------|------|------|
@@ -199,15 +193,7 @@ java -jar chandao-fetch.jar --url https://new-server.com --username newuser --pa
 
 新配置会自动保存。
 
-## 技术栈
-
-- JDK 8
-- OkHttp 4.x（HTTP 客户端）
-- Jackson 2.x（JSON 解析）
-- JCommander 1.x（命令行解析）
-- SLF4J + Logback（日志）
-
-## 开发
+## 开发命令
 
 ```bash
 # 编译
@@ -223,6 +209,10 @@ mvn clean package
 mvn clean package -DskipTests
 ```
 
-## License
+## 许可证
 
-MIT
+MIT License - 详见 [LICENSE](../../LICENSE)
+
+## 相关项目
+
+- [zentao-workflow](https://github.com/zulinliu/zentao-workflow) - 禅道开发工作流技能（主项目）

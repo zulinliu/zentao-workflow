@@ -1,6 +1,6 @@
 # Zentao Workflow Skill
 
-[![Version](https://img.shields.io/badge/version-1.4.0-blue.svg)](https://github.com/zulinliu/zentao-workflow)
+[![Version](https://img.shields.io/badge/version-1.4.1-blue.svg)](https://github.com/zulinliu/zentao-workflow)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-Skill-purple.svg)](https://claude.ai/code)
 [![Release](https://img.shields.io/github/release/zulinliu/zentao-workflow.svg)](https://github.com/zulinliu/zentao-workflow/releases)
@@ -227,4 +227,4 @@ Claude: [触发 zentao-workflow 技能]
 
 ---
 
-**版本**: 1.4.0 | **作者**: liuzl | **许可证**: MIT
+**版本**: 1.4.1 | **作者**: liuzl | **许可证**: MIT

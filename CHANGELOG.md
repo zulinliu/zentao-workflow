@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.1] - 2025-03-27
+
+### Changed
+- **触发条件优化**：
+  - 支持更多格式：`需求39382`、`39382需求`、`禅道需求39382` 等
+  - 改进关键词匹配，减少漏触发情况
+- **Java 源码管理**：
+  - 源码移动到 `scripts/java-src/` 目录，纳入 git 管理
+  - release 包不包含源码，仅包含编译后的 JAR
+- **文档同步**：
+  - README.md 更新到 v1.4.1，添加新功能说明
+  - 添加版本历史表格，方便用户了解功能演进
+
 ## [1.4.0] - 2025-03-26
 
 ### Added

@@ -31,9 +31,15 @@ jobs:
 
           # 只复制 SKILL 必须的文件到 zentao-workflow 子目录
           cp SKILL.md release_temp/zentao-workflow/
-          cp -r scripts release_temp/zentao-workflow/
           cp -r assets release_temp/zentao-workflow/
           cp -r references release_temp/zentao-workflow/
+
+          # 复制 scripts 目录，但排除 java-src 子目录
+          mkdir -p release_temp/zentao-workflow/scripts
+          cp scripts/chandao-fetch.jar release_temp/zentao-workflow/scripts/ 2>/dev/null || true
+          cp scripts/chandao_fetch.py release_temp/zentao-workflow/scripts/ 2>/dev/null || true
+          cp scripts/requirements.txt release_temp/zentao-workflow/scripts/ 2>/dev/null || true
+          cp -r scripts/chandao_fetch release_temp/zentao-workflow/scripts/ 2>/dev/null || true
 
           # 创建 zip 包（包含 zentao-workflow 目录）
           cd release_temp

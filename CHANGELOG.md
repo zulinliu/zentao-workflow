@@ -7,6 +7,49 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.0] - 2025-03-27
+
+### Changed
+- **重大重构：集成 superpowers 技能链**
+  - 技术方案设计使用 `superpowers:brainstorming` 技能
+  - 编码执行使用 `superpowers:subagent-driven-development` 或 `superpowers:executing-plans`
+  - 代码评审使用 `superpowers:requesting-code-review` 技能
+
+- **合并架构方案和编码方案**
+  - 原架构方案设计 + 编码方案设计 → 合并为"技术实现方案设计"
+  - 消除重复探索，一次完成所有设计工作
+  - 输出文件从 2 个合并为 1 个：`story_39382_技术实现方案.md`
+
+- **效率大幅提升**
+  - 代理数量减少 85%：12-17 个 → 1-2 个
+  - 简单需求耗时减少 70%：20+ 分钟 → 5-8 分钟
+  - 复杂需求耗时减少 50%：40+ 分钟 → 15-25 分钟
+
+- **技术实现方案内容精简**
+  - 聚焦三项核心内容：需求分析、架构设计、实现步骤
+  - 移除：测试计划、风险评估（由 superpowers 技能自动处理）
+
+### Added
+- **superpowers 技能环境检测**
+  - Step 1 新增 superpowers 插件检测
+  - 未安装时提供自动安装选项
+
+### Dependencies
+- 新增依赖：superpowers 插件 5.0.6+
+
+## [1.4.1] - 2025-03-27
+
+### Changed
+- **触发条件优化**：
+  - 支持更多格式：`需求39382`、`39382需求`、`禅道需求39382` 等
+  - 改进关键词匹配，减少漏触发情况
+- **Java 源码管理**：
+  - 源码移动到 `scripts/java-src/` 目录，纳入 git 管理
+  - release 包不包含源码，仅包含编译后的 JAR
+- **文档同步**：
+  - README.md 更新到 v1.4.1，添加新功能说明
+  - 添加版本历史表格，方便用户了解功能演进
+
 ## [1.4.0] - 2025-03-26
 
 ### Added

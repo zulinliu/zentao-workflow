@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.5.1] - 2026-04-02
+## [1.6.0] - 2026-04-02
 
 ### Added
 - **子任务检测与关联内容下载逻辑**（Issue #61563）
@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - 自动下载关联需求（story）和父任务（parent task），确保获取完整需求描述
 
 ### Changed
-- **SKILL.md 版本号更新**：1.5.0 → 1.5.1
+- **SKILL.md 版本号更新**：1.5.0 → 1.6.0
 - **需求摘要展示**：下载完成后自动展示需求来源、核心描述和验收标准
 
 ### Fixed

@@ -8,7 +8,7 @@ This file provides guidance to Claude Code when working with code in this reposi
 
 ## 版本信息
 
-- **版本**: 1.5.0
+- **版本**: 1.6.0
 - **作者**: liuzl
 - **许可证**: MIT
 

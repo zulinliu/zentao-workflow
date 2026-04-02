@@ -1,7 +1,12 @@
 ---
 name: zentao-workflow
 description: |
-  禅道开发工作流助手 v1.5.0 - 自动化禅道需求/任务/Bug下载与技术实现方案设计。
+  禅道开发工作流助手 v1.5.1 - 自动化禅道需求/任务/Bug 下载与技术实现方案设计。
+
+  【v1.5.1 核心更新】
+  - 新增子任务检测与关联内容下载逻辑
+  - 解决子任务（如 task 61563）描述为空的问题
+  - 自动下载关联需求和父任务，确保获取完整需求描述
 
   【v1.5.0 核心更新】
   - 集成 superpowers:brainstorming 技能，技术方案设计效率提升 70%+
@@ -27,8 +32,9 @@ description: |
   1. 自动检测 Java/Python 环境和 superpowers 技能依赖
   2. 内置下载工具，无需额外安装
   3. 交互式配置禅道服务器信息
-  4. 下载需求/任务/Bug详情及附件到本地
-  5. 使用 brainstorming 技能生成技术实现方案
+  4. 下载需求/任务/Bug 详情及附件到本地
+  5. 子任务自动检测与关联内容下载（v1.5.1 新增）
+  6. 使用 brainstorming 技能生成技术实现方案
 
   【依赖】需要 superpowers 插件 5.0.6+
 
@@ -43,8 +49,8 @@ description: |
 
 | 工具 | 位置 | 运行时 |
 |------|------|--------|
-| Java版 | `{SKILL_DIR}/scripts/chandao-fetch.jar` | Java 8+ |
-| Python版 | `{SKILL_DIR}/scripts/chandao_fetch.py` | Python 3.6+ |
+| Java 版 | `{SKILL_DIR}/scripts/chandao-fetch.jar` | Java 8+ |
+| Python 版 | `{SKILL_DIR}/scripts/chandao_fetch.py` | Python 3.6+ |
 
 ## 执行步骤
 
@@ -315,16 +321,78 @@ python3 "{SKILL_DIR}/scripts/chandao_fetch.py" -t {type} -i {id}
 - `-Dfile.encoding=UTF-8`: 确保跨平台中文显示正常
 - 路径使用**双引号**包裹，避免空格问题
 
+**3.5 子任务检测与关联内容下载（v1.5.1 新增）**
+
+**问题背景**：禅道的子任务（如 task 61563）的 `desc` 字段 API 返回为空，实际需求描述存储在：
+- 关联的需求（story）
+- 父任务（parent task）
+
+**检测逻辑**：
+
+下载任务后，检查生成的 Markdown 文件内容：
+
+```bash
+# 检查任务描述是否为空
+if ! grep -q "^## 任务描述" "{output}/{type}/{id}-*.md" 2>/dev/null; then
+  echo "检测到子任务，描述为空，需要下载关联内容"
+fi
+```
+
+**关联内容下载策略**：
+
+| 场景 | 下载策略 |
+|------|----------|
+| 任务描述为空 | 1. 读取任务 MD 获取 `story` 字段（关联需求 ID）<br>2. 读取任务 MD 获取 `parent` 字段（父任务 ID）<br>3. 自动下载关联需求和父任务 |
+| 任务描述非空 | 无需额外下载 |
+
+**自动下载命令**：
+
+```bash
+# 下载关联需求
+java -Dfile.encoding=UTF-8 -Dconsole.encoding=UTF-8 -jar "{SKILL_DIR}/scripts/chandao-fetch.jar" -t story -i {storyId}
+
+# 下载父任务
+java -Dfile.encoding=UTF-8 -Dconsole.encoding=UTF-8 -jar "{SKILL_DIR}/scripts/chandao-fetch.jar" -t task -i {parentTaskId}
+```
+
 **下载完成后展示**：
 
 ```
 ✓ 下载完成
 
-  类型: 需求
-  ID: 38817
-  标题: 用户登录功能优化
-  文件: /path/to/workspace/story/38817-用户登录功能优化.md
-  附件: 3个文件已下载到 attachments/story/38817/
+  类型：任务（子任务）
+  ID: 61563
+  标题：【后端】统计分析 - 出清统计分析
+  文件：/path/to/workspace/task/61563-标题.md
+
+  关联内容已自动下载：
+  - 需求 39415: /path/to/workspace/story/39415-需求标题.md
+  - 父任务 61549: /path/to/workspace/task/61549-父任务标题.md
+
+  附件：3 个文件已下载到 attachments/task/61563/
+```
+
+**3.6 需求分析引导**
+
+下载完成后，展示需求的核心描述内容（从关联需求/父任务中提取），帮助用户快速理解：
+
+```
+📋 需求摘要
+
+【需求来源】
+- 需求 ID: 39415
+- 需求标题：统计分析 - 出清统计分析 - 出清电力分析"模块，"长周期运行分析"TAB 页表格完善
+- 任务 ID: 61563（子任务）
+
+【核心描述】
+"统计分析 - 出清统计分析 - 出清电力分析"模块，"长周期运行分析"TAB 页，分析方法选择：
+全网--保供与消纳场景
+分别在最大保供出清电力、最大消纳出清电力后增加一列时间，注：时间写法为"2026-01-23 00:15"
+
+【验收标准】
+1. 在最大保供出清电力后增加时间列
+2. 在最大消纳出清电力后增加时间列
+3. 时间格式：yyyy-MM-dd HH:mm
 ```
 
 ### Step 4: 技术实现方案设计
@@ -547,6 +615,7 @@ AskUserQuestion:
 4. **配置优先级** - 工作区配置 > 全局配置
 5. **主动沟通** - 方案设计中有疑问必须主动询问
 6. **效率优化** - v1.5.0 通过集成 brainstorming 技能，代理数量减少 85%+
+7. **子任务处理** - v1.5.1 自动检测子任务并下载关联需求和父任务
 
 ## 相关资源
 

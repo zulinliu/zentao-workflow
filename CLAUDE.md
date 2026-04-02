@@ -4,11 +4,11 @@ This file provides guidance to Claude Code when working with code in this reposi
 
 ## 项目说明
 
-这是一个 Claude Code Skill 项目，用于自动化禅道需求/任务/Bug 下载与开发技术方案设计。
+这是一个 Claude Code Skill 项目，用于自动化禅道需求/任务/Bug 下载与技术实现方案设计。
 
 ## 版本信息
 
-- **版本**: 1.0.0
+- **版本**: 1.6.0
 - **作者**: liuzl
 - **许可证**: MIT
 
@@ -17,12 +17,12 @@ This file provides guidance to Claude Code when working with code in this reposi
 ### Java 版本构建
 
 ```bash
-# 在源项目目录执行
-cd /home/liuzl/agent/tsintergy-chandao-fetch
+# 在 scripts/java-src 目录中执行
+cd scripts/java-src
 mvn clean package -DskipTests
 
-# 复制 JAR 到 skill 目录
-cp target/chandao-fetch.jar scripts/
+# 复制 JAR 到 scripts 目录
+cp target/chandao-fetch.jar ../
 ```
 
 ### Python 版本测试
@@ -37,13 +37,22 @@ python3 chandao_fetch.py -t task -i 61215 -o /tmp/test-output
 
 ## 架构说明
 
-### 技能执行流程（SKILL.md）
+### 技能执行流程（SKILL.md v1.5.0）
 
-1. **环境检测** - 检测 Java/Python，优先使用 Java（更稳定）
-2. **配置初始化** - 检查 `~/.chandao/config.properties`，不存在则引导用户创建
-3. **下载内容** - 调用内置工具下载需求/任务/Bug 及附件
-4. **技术方案设计** - 进入 Plan 模式，分析项目代码生成开发方案
-5. **输出保存** - 保存技术方案到工作区根目录
+1. **Step 1: 环境检测** - 检测 Java/Python 和 superpowers 技能依赖
+2. **Step 2: 配置初始化** - 检查配置文件，引导用户创建
+3. **Step 3: 下载内容** - 调用内置工具下载需求/任务/Bug 及附件
+4. **Step 4: 技术实现方案设计** - 调用 superpowers:brainstorming 生成方案
+5. **Step 5: 输出方案** - 展示方案摘要
+6. **Step 6: 开始编码** - 调用 superpowers:subagent-driven-development 或 executing-plans
+
+### v1.5.0 核心变更
+
+| 指标 | v1.4.x | v1.5.0 | 提升 |
+|------|--------|--------|------|
+| 设计阶段 | 3 个（架构+输出+编码） | 1 个（技术实现方案） | -67% |
+| 代理数量 | 12-17 个 | 1-2 个 | -85%+ |
+| 简单需求耗时 | 20+ 分钟 | 5-8 分钟 | -70%+ |
 
 ### Python 模块架构
 
@@ -94,6 +103,7 @@ scripts/chandao_fetch/
 | 登录失败 | 账号密码错误 | 检查配置文件中的凭据 |
 | ID 不存在 | 无权限或已删除 | 确认 ID 正确且有访问权限 |
 | 附件下载失败 | 权限不足 | 检查输出目录写入权限 |
+| superpowers 未安装 | 新环境 | 执行 `claude plugins add official superpowers` |
 
 ## 项目管理规范
 
@@ -124,6 +134,7 @@ feature/xxx → dev → (评审通过) → main → (自动发版)
 - [ ] VERSION 文件已更新
 - [ ] CHANGELOG.md 已更新
 - [ ] README.md 版本徽章已更新
+- [ ] SKILL.md 版本号已更新
 - [ ] 代码已评审通过
 - [ ] 从 dev 合并到 main（自动触发发版）
 
@@ -133,5 +144,21 @@ feature/xxx → dev → (评审通过) → main → (自动发版)
 git commit -m "feat: 功能描述"   # 功能更新
 git commit -m "fix: 修复描述"    # 问题修复
 git commit -m "docs: 文档描述"   # 文档更新
-git commit -m "release: v1.0.0"  # 版本发布
+git commit -m "release: v1.5.0"  # 版本发布
+```
+
+## 依赖说明
+
+### 运行时依赖
+
+| 依赖 | 版本要求 | 说明 |
+|------|----------|------|
+| Java | 8+ | 优先使用 |
+| Python | 3.6+ | 默认备选 |
+| superpowers 插件 | 5.0.6+ | v1.5.0 技术方案设计必需 |
+
+### 安装 superpowers
+
+```bash
+claude plugins add official superpowers
 ```

@@ -146,6 +146,7 @@ Deferred to future release. Tracked but not in current roadmap.
 | FOUND-14 | Phase 1 | Pending |
 | FOUND-15 | Phase 1 | Pending |
 | FOUND-16 | Phase 1 | Pending |
+| DOC-03 | Phase 1 | Pending |
 | INPUT-01 | Phase 2 | Pending |
 | INPUT-02 | Phase 2 | Pending |
 | INPUT-05 | Phase 2 | Pending |
@@ -180,7 +181,6 @@ Deferred to future release. Tracked but not in current roadmap.
 | SKILL-05 | Phase 5 | Pending |
 | DOC-01 | Phase 5 | Pending |
 | DOC-02 | Phase 5 | Pending |
-| DOC-03 | Phase 1 | Pending |
 | DOC-04 | Phase 5 | Pending |
 | DOC-05 | Phase 5 | Pending |
 | REL-01 | Phase 5 | Pending |
@@ -190,10 +190,10 @@ Deferred to future release. Tracked but not in current roadmap.
 | REL-05 | Phase 5 | Pending |
 
 **Coverage:**
-- v1 requirements: 54 total
-- Mapped to phases: 54
-- Unmapped: 0 ✓
+- v1 requirements: 58 total
+- Mapped to phases: 58
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-04-04*
-*Last updated: 2026-04-04 after initial definition*
+*Last updated: 2026-04-04 after roadmap creation*

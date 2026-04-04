@@ -28,9 +28,15 @@ Decimal phases appear between their surrounding integers in numeric order.
   1. Running `grep -r "chandao\|zentao" scripts/` returns zero hits (all naming references eliminated)
   2. The Java JAR, java-src/ directory, and all Java references are gone from the repository
   3. `python -c "from worklet import __version__; print(__version__)"` prints "2.0.0" from the renamed package
-  4. WorkletConfig loads from .worklet/config.properties with 0600 file permissions enforced
+  4. WorkletConfig loads from .worklet/config.toml with 0600 file permissions enforced
   5. `pyproject.toml` exists and declares Python >= 3.10 with correct project metadata
-**Plans**: TBD
+**Plans:** 4 plans
+
+Plans:
+- [ ] 01-01-PLAN.md -- Delete Java artifacts, clean __pycache__, remove Java permissions from settings
+- [ ] 01-02-PLAN.md -- Rename package chandao_fetch to worklet, update all imports/classes, version to 2.0.0
+- [ ] 01-03-PLAN.md -- Migrate config to TOML format, add new data model stubs, convert config template
+- [ ] 01-04-PLAN.md -- Create pyproject.toml, update requirements.txt, update .gitignore/.release-ignore/SKILL.md/release.yml
 
 ### Phase 2: Core Pipeline
 **Goal**: A developer can fetch a Zentao story/task/bug by ID or read a local Markdown file, and get clean Markdown output through the unified Source-Normalize-Export pipeline
@@ -85,7 +91,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation and Rename | 0/? | Not started | - |
+| 1. Foundation and Rename | 0/4 | Planned | - |
 | 2. Core Pipeline | 0/? | Not started | - |
 | 3. Extended Sources and Testing | 0/? | Not started | - |
 | 4. Pipeline Assembly and CLI | 0/? | Not started | - |

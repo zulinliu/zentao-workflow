@@ -66,11 +66,11 @@ Plans:
   3. Running the tool with an image file copies it to the workspace and generates a Markdown reference for Claude multimodal processing
   4. Running the tool with a folder path recursively scans and aggregates all supported file types
   5. `pytest` passes with tests covering config, ZentaoSource (mocked), Exporter, InputParser, and all readers
-**Plans:** 1/4 plans executed
+**Plans:** 2/4 plans executed
 
 Plans:
-- [ ] 03-01-PLAN.md -- PdfReader, DocxReader, ImageReader with MarkItDown lazy import (INPUT-06, INPUT-07, INPUT-08)
-- [ ] 03-02-PLAN.md -- FileSource auto-detect and FolderSource recursive scan (INPUT-03, INPUT-04)
+- [x] 03-01-PLAN.md -- PdfReader, DocxReader, ImageReader with MarkItDown lazy import (INPUT-06, INPUT-07, INPUT-08)
+- [x] 03-02-PLAN.md -- FileSource auto-detect and FolderSource recursive scan (INPUT-03, INPUT-04)
 - [x] 03-03-PLAN.md -- pytest framework setup with conftest.py fixtures (TEST-01)
 - [ ] 03-04-PLAN.md -- Unit tests for config, sources, exporter, readers (TEST-02, TEST-03, TEST-04, TEST-05, TEST-06)
 
@@ -106,6 +106,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 |-------|----------------|--------|-----------|
 | 1. Foundation and Rename | 3/4 | In Progress|  |
 | 2. Core Pipeline | 6/7 | In Progress|  |
-| 3. Extended Sources and Testing | 1/4 | In Progress|  |
+| 3. Extended Sources and Testing | 3/4 | In Progress|  |
 | 4. Pipeline Assembly and CLI | 0/? | Not started | - |
 | 5. SKILL.md Rewrite and Release | 0/? | Not started | - |

@@ -54,7 +54,7 @@ Plans:
 - [x] 02-02-PLAN.md -- Client fixes: timeout, streaming, exceptions, re.findall, subtask (CLIENT-01~05)
 - [x] 02-03-PLAN.md -- Exporter rewrite with markdownify (EXPORT-01~03)
 - [x] 02-04-PLAN.md -- FileSource + MarkdownReader for .md/.txt (INPUT-05)
-- [ ] 02-05-PLAN.md -- ZentaoSource full implementation + pipeline wiring (INPUT-02)
+- [x] 02-05-PLAN.md -- ZentaoSource full implementation + pipeline wiring (INPUT-02)
 
 ### Phase 3: Extended Sources and Testing
 **Goal**: The tool handles PDF, DOCX, and image files as input sources, and the entire codebase has pytest coverage validating each component

@@ -4,13 +4,13 @@ milestone: v2.0.0
 milestone_name: milestone
 status: verifying
 stopped_at: Completed 02-04-PLAN.md
-last_updated: "2026-04-05T11:13:23.442Z"
+last_updated: "2026-04-05T11:15:40.537Z"
 last_activity: 2026-04-05
 progress:
   total_phases: 5
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 9
-  completed_plans: 8
+  completed_plans: 9
   percent: 0
 ---
 
@@ -60,6 +60,7 @@ Progress: [..........] 0%
 | Phase 02-core-pipeline P02-02 | 9 | 2 tasks | 2 files |
 | Phase 02-core-pipeline P02-03 | 10 | 3 tasks | 1 files |
 | Phase 02-core-pipeline P02-04 | 60 | 1 tasks | 1 files |
+| Phase 02-core-pipeline P02-05 | 180 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -77,6 +78,9 @@ Recent decisions affecting current work:
 - [Phase 02-core-pipeline]: D-04: Use markdownify>=0.18.0 instead of 40+ regex replacements
 - [Phase 02-core-pipeline]: D-01: Exporter internal Story/Task/Bug -> Worklet conversion
 - [Phase 02-core-pipeline]: INPUT-05: MarkdownReader reads .md/.txt files and returns RawContent
+- [Phase 02-core-pipeline]: D-01: Uses exporter._to_worklet for Story/Task/Bug -> Worklet conversion
+- [Phase 02-core-pipeline]: D-02: BaseSource ABC + SourceRegistry with fallback registration
+- [Phase 02-core-pipeline]: D-03: Subtask detection integrated into ZentaoSource via _detect_subtasks method
 
 ### Pending Todos
 

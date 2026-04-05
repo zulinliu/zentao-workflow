@@ -29,7 +29,7 @@ Requirements for v2.0.0 release. Each maps to roadmap phases.
 ### Multi-Source Input (INPUT)
 
 - [ ] **INPUT-01**: BaseSource ABC 定义统一 fetch() 接口，SourceRegistry 自动发现机制
-- [ ] **INPUT-02**: ZentaoSource 替代现有 client.py + service.py，保持禅道 API 读取能力
+- [x] **INPUT-02**: ZentaoSource 替代现有 client.py + service.py，保持禅道 API 读取能力
 - [ ] **INPUT-03**: FileSource 支持读取本地文件，自动识别格式（MD/PDF/DOCX/图片）
 - [ ] **INPUT-04**: FolderSource 支持递归扫描文件夹，聚合多文件需求
 - [x] **INPUT-05**: MarkdownReader 读取 .md/.txt 文件
@@ -148,7 +148,7 @@ Deferred to future release. Tracked but not in current roadmap.
 | FOUND-16 | Phase 1 | Complete |
 | DOC-03 | Phase 1 | Pending |
 | INPUT-01 | Phase 2 | Pending |
-| INPUT-02 | Phase 2 | Pending |
+| INPUT-02 | Phase 2 | Complete |
 | INPUT-05 | Phase 2 | Complete |
 | CLIENT-01 | Phase 2 | Pending |
 | CLIENT-02 | Phase 2 | Pending |

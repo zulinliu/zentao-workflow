@@ -53,7 +53,7 @@ class WorkletClient:
 
         response = self.session.post(url, data=data)
         if not response.ok:
-            raise Exception(f"Login failed: HTTP {response.status_code}")
+            raise requests.exceptions.HTTPError(f"Login failed: HTTP {response.status_code}") from None
 
         result = response.json()
 
@@ -63,7 +63,7 @@ class WorkletClient:
             return True
         else:
             message = result.get("message", "Unknown error")
-            raise Exception(f"Login failed: {message}")
+            raise requests.exceptions.HTTPError(f"Login failed: {message}") from None
 
     def _ensure_logged_in(self):
         """Ensure logged in before making requests"""
@@ -75,7 +75,7 @@ class WorkletClient:
         self._ensure_logged_in()
         response = self.session.get(url)
         if not response.ok:
-            raise Exception(f"Request failed: {url} HTTP {response.status_code}")
+            raise requests.exceptions.HTTPError(f"Request failed: {url} HTTP {response.status_code}") from None
         return response.json()
 
     def _parse_attachments(self, files_data: dict) -> list[Attachment]:
@@ -230,20 +230,37 @@ class WorkletClient:
         print(f"Fetched bug: {bug_id} - {bug.title}")
         return bug
 
-    def download_attachment(self, attachment_id: int) -> bytes:
-        """Download attachment"""
+    def download_attachment(self, attachment_id: int, timeout: tuple[float, float] | float | None = None) -> bytes:
+        """Download attachment with streaming and timeout.
+
+        Args:
+            attachment_id: Attachment ID
+            timeout: Optional timeout in seconds (connect, read) or single value.
+                     Defaults to session timeout if None.
+        """
         self._ensure_logged_in()
 
         url = urljoin(self.config.base_url, f"/file-download-{attachment_id}.json")
-        response = self.session.get(url)
 
-        if not response.ok:
-            raise Exception(f"Download failed: HTTP {response.status_code}")
+        try:
+            response = self.session.get(url, stream=True, timeout=timeout)
+            response.raise_for_status()
+        except requests.exceptions.Timeout as e:
+            raise requests.exceptions.Timeout(f"Attachment download timed out (ID={attachment_id}): {e}") from None
+        except requests.exceptions.ConnectionError as e:
+            raise requests.exceptions.ConnectionError(f"Failed to connect for attachment download: {e}") from None
+        except requests.exceptions.HTTPError as e:
+            raise requests.exceptions.HTTPError(f"Attachment download failed (ID={attachment_id}): {e}") from None
 
         return response.content
 
-    def download_image(self, image_path: str) -> bytes:
-        """Download image"""
+    def download_image(self, image_path: str, timeout: tuple[float, float] | float | None = None) -> bytes:
+        """Download image with timeout.
+
+        Args:
+            image_path: Image URL or path
+            timeout: Optional timeout in seconds
+        """
         self._ensure_logged_in()
 
         if image_path.startswith("http"):
@@ -251,8 +268,14 @@ class WorkletClient:
         else:
             url = urljoin(self.config.base_url, image_path)
 
-        response = self.session.get(url)
-        if not response.ok:
-            raise Exception(f"Image download failed: HTTP {response.status_code}")
+        try:
+            response = self.session.get(url, timeout=timeout)
+            response.raise_for_status()
+        except requests.exceptions.Timeout as e:
+            raise requests.exceptions.Timeout(f"Image download timed out ({image_path}): {e}") from None
+        except requests.exceptions.ConnectionError as e:
+            raise requests.exceptions.ConnectionError(f"Failed to connect for image download: {e}") from None
+        except requests.exceptions.HTTPError as e:
+            raise requests.exceptions.HTTPError(f"Image download failed ({image_path}): {e}") from None
 
         return response.content

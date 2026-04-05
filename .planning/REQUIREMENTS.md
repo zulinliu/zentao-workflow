@@ -32,7 +32,7 @@ Requirements for v2.0.0 release. Each maps to roadmap phases.
 - [ ] **INPUT-02**: ZentaoSource 替代现有 client.py + service.py，保持禅道 API 读取能力
 - [ ] **INPUT-03**: FileSource 支持读取本地文件，自动识别格式（MD/PDF/DOCX/图片）
 - [ ] **INPUT-04**: FolderSource 支持递归扫描文件夹，聚合多文件需求
-- [ ] **INPUT-05**: MarkdownReader 读取 .md/.txt 文件
+- [x] **INPUT-05**: MarkdownReader 读取 .md/.txt 文件
 - [ ] **INPUT-06**: PdfReader 使用 pypdf 读取 PDF（lazy import，可选依赖）
 - [ ] **INPUT-07**: DocxReader 使用 python-docx 读取 Word（lazy import，可选依赖）
 - [ ] **INPUT-08**: ImageReader 将图片复制到工作区，生成 Markdown 引用供 Claude 多模态识别
@@ -149,7 +149,7 @@ Deferred to future release. Tracked but not in current roadmap.
 | DOC-03 | Phase 1 | Pending |
 | INPUT-01 | Phase 2 | Pending |
 | INPUT-02 | Phase 2 | Pending |
-| INPUT-05 | Phase 2 | Pending |
+| INPUT-05 | Phase 2 | Complete |
 | CLIENT-01 | Phase 2 | Pending |
 | CLIENT-02 | Phase 2 | Pending |
 | CLIENT-03 | Phase 2 | Pending |

@@ -70,11 +70,11 @@ Requirements for v2.0.0 release. Each maps to roadmap phases.
 ### Testing (TEST)
 
 - [x] **TEST-01**: pytest 测试框架搭建（conftest.py、fixtures）
-- [ ] **TEST-02**: WorkletConfig 单元测试（加载/保存/校验/权限）
-- [ ] **TEST-03**: ZentaoSource 单元测试（登录/获取/下载，mock API）
-- [ ] **TEST-04**: Exporter 单元测试（HTML→MD 转换，各种边界情况）
-- [ ] **TEST-05**: InputParser 单元测试（类型自动检测）
-- [ ] **TEST-06**: Reader 单元测试（MD/PDF/DOCX/Image 读取）
+- [x] **TEST-02**: WorkletConfig 单元测试（加载/保存/校验/权限）
+- [x] **TEST-03**: ZentaoSource 单元测试（登录/获取/下载，mock API）
+- [x] **TEST-04**: Exporter 单元测试（HTML→MD 转换，各种边界情况）
+- [x] **TEST-05**: InputParser 单元测试（类型自动检测）
+- [x] **TEST-06**: Reader 单元测试（MD/PDF/DOCX/Image 读取）
 
 ### Documentation (DOC)
 
@@ -164,11 +164,11 @@ Deferred to future release. Tracked but not in current roadmap.
 | INPUT-07 | Phase 3 | Pending |
 | INPUT-08 | Phase 3 | Pending |
 | TEST-01 | Phase 3 | Complete |
-| TEST-02 | Phase 3 | Pending |
-| TEST-03 | Phase 3 | Pending |
-| TEST-04 | Phase 3 | Pending |
-| TEST-05 | Phase 3 | Pending |
-| TEST-06 | Phase 3 | Pending |
+| TEST-02 | Phase 3 | Complete |
+| TEST-03 | Phase 3 | Complete |
+| TEST-04 | Phase 3 | Complete |
+| TEST-05 | Phase 3 | Complete |
+| TEST-06 | Phase 3 | Complete |
 | INPUT-09 | Phase 4 | Pending |
 | ENV-01 | Phase 4 | Pending |
 | ENV-02 | Phase 4 | Pending |

@@ -7,6 +7,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0] - 2026-04-05
+
+### Added
+- Multi-source support: Zentao API and local file/folder input
+- BaseSource ABC with ZentaoSource and FileSource implementations
+- InputParser for automatic input type detection
+- Environment caching with 24h TTL
+- superpowers npx-based detection
+
+### Changed
+- Renamed project from zentao-workflow to worklet
+- SKILL.md triggers updated to generic dev keywords
+- All path references use ${CLAUDE_SKILL_DIR}
+- HTML-to-Markdown conversion using markdownify library
+
+### Removed
+- Java runtime and chandao-fetch.jar
+- Java project analysis guide
+- All zentao/chandao specific naming
+
+### Fixed
+- client.py: download timeout, streaming, specific exception types
+- service.py: removed无用 re.findall, concurrent attachment downloads
+- config.py: file permissions 0600, config validation
+- exporter.py: HTML-to-Markdown using html.parser instead of 40+ regex
+
 ## [1.6.0] - 2026-04-02
 
 ### Added

@@ -16,6 +16,10 @@ dependencies = [
     "tomli-w>=1.0.0",
 ]
 
+[project.entry-points."worklet.sources"]
+zentao = "worklet.sources.zentao:ZentaoSource"
+markdown = "worklet.sources.markdown:MarkdownSource"
+
 [tool.setuptools.packages.find]
 where = ["scripts"]
 

@@ -1,6 +1,6 @@
 # 项目管理与发版规范
 
-本文档定义了 zentao-workflow 项目的开发流程、版本管理和发版规范。
+本文档定义了 worklet 项目的开发流程、版本管理和发版规范。
 
 ## 分支策略
 
@@ -136,8 +136,6 @@ git push origin feature/xxx
 
 ### Scope（可选）
 
-- `java` - Java 版本相关
-- `python` - Python 版本相关
 - `skill` - SKILL.md 相关
 - `ci` - CI/CD 相关
 
@@ -148,9 +146,9 @@ git push origin feature/xxx
 | 文件/目录 | 说明 | 必须性 |
 |-----------|------|--------|
 | `SKILL.md` | 技能主文件 | **必须** |
-| `scripts/` | 内置工具（Java jar + Python） | **必须** |
+| `scripts/` | 内置工具（Python） | **必须** |
 | `assets/` | 模板资源 | **必须** |
-| `references/` | 项目分析指南（Java/React） | **必须** |
+| `references/` | 项目分析指南 | **必须** |
 
 ### 排除文件（不打包到 release）
 
@@ -167,10 +165,10 @@ git push origin feature/xxx
 
 | 文件 | dev 分支 | main 分支 | 说明 |
 |------|----------|-----------|------|
-| `CLAUDE.md` | ✅ | ❌ | 开发环境配置，不进入发布包 |
-| `.release-ignore` | ✅ | ❌ | 打包排除配置 |
-| `.github/` | ✅ | ✅ | CI/CD 配置 |
-| `references/*.md` | ✅ | ✅ | 参考指南 |
+| `CLAUDE.md` | Yes | No | 开发环境配置，不进入发布包 |
+| `.release-ignore` | Yes | No | 打包排除配置 |
+| `.github/` | Yes | Yes | CI/CD 配置 |
+| `references/*.md` | Yes | Yes | 参考指南 |
 
 ### 发布包排除
 
@@ -193,7 +191,7 @@ git push origin feature/xxx
 ```yaml
 1. 检出代码
 2. 读取版本号
-3. 打包文件 → zentao-workflow-vX.X.X.zip
+3. 打包文件 → worklet-vX.X.X.zip
 4. 提取 CHANGELOG
 5. 创建 GitHub Release
 6. 上传 zip 文件
@@ -202,7 +200,7 @@ git push origin feature/xxx
 ### Release 资源
 
 每个版本包含：
-- `zentao-workflow-vX.X.X.zip` - 完整安装包
+- `worklet-vX.X.X.zip` - 完整安装包
 - Release Notes - 变更说明和安装指南
 
 ## 紧急修复流程

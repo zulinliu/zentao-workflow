@@ -19,6 +19,9 @@ dependencies = [
 [project.entry-points."worklet.sources"]
 zentao = "worklet.sources.zentao:ZentaoSource"
 markdown = "worklet.sources.markdown:MarkdownSource"
+pdf = "worklet.sources.pdf:PdfReader"
+docx = "worklet.sources.docx:DocxReader"
+image = "worklet.sources.image:ImageReader"
 
 [tool.setuptools.packages.find]
 where = ["scripts"]

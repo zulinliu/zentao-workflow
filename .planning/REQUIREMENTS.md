@@ -10,21 +10,21 @@ Requirements for v2.0.0 release. Each maps to roadmap phases.
 ### Foundation (FOUND)
 
 - [ ] **FOUND-01**: 项目全量重命名 chandao_fetch → worklet，包括包名、类名、文件夹、配置键名
-- [ ] **FOUND-02**: 删除 Java 版本：chandao-fetch.jar、java-src/ 目录、所有 Java 相关引用
-- [ ] **FOUND-03**: Python 版本要求提升到 3.10+，更新 CLAUDE.md 和 README
+- [x] **FOUND-02**: 删除 Java 版本：chandao-fetch.jar、java-src/ 目录、所有 Java 相关引用
+- [x] **FOUND-03**: Python 版本要求提升到 3.10+，更新 CLAUDE.md 和 README
 - [ ] **FOUND-04**: 数据模型重构：Worklet/RawContent/Attachment dataclass，BaseSource/BaseReader ABC
 - [ ] **FOUND-05**: WorkletConfig 替代 ChandaoConfig，配置目录 .worklet/（项目根优先 → ~/.worklet/）
 - [ ] **FOUND-06**: 配置文件写入权限 0600，防止密码泄露
-- [ ] **FOUND-07**: .worklet/ 自动加入 .gitignore，防止密码误提交
-- [ ] **FOUND-08**: .gitignore 更新（chandao-data → worklet 相关路径）
-- [ ] **FOUND-09**: .release-ignore 更新（移除 Java 相关路径和注释）
+- [x] **FOUND-07**: .worklet/ 自动加入 .gitignore，防止密码误提交
+- [x] **FOUND-08**: .gitignore 更新（chandao-data → worklet 相关路径）
+- [x] **FOUND-09**: .release-ignore 更新（移除 Java 相关路径和注释）
 - [ ] **FOUND-10**: .claude/settings.local.json 清理旧的 Java 复制权限规则
-- [ ] **FOUND-11**: scripts/requirements.txt 更新（新依赖 + requests>=2.32.0 + 注释重命名）
+- [x] **FOUND-11**: scripts/requirements.txt 更新（新依赖 + requests>=2.32.0 + 注释重命名）
 - [ ] **FOUND-12**: scripts/chandao_fetch.py 入口文件重命名为 worklet.py
 - [ ] **FOUND-13**: 清理 __pycache__/ 编译缓存
 - [ ] **FOUND-14**: 下载输出目录统一到 .worklet/ 下（story/task/bug/files/attachments）
 - [ ] **FOUND-15**: __init__.py 版本号同步更新为 2.0.0
-- [ ] **FOUND-16**: 新建 pyproject.toml 管理依赖和项目元数据（替代裸 requirements.txt）
+- [x] **FOUND-16**: 新建 pyproject.toml 管理依赖和项目元数据（替代裸 requirements.txt）
 
 ### Multi-Source Input (INPUT)
 
@@ -131,21 +131,21 @@ Deferred to future release. Tracked but not in current roadmap.
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | FOUND-01 | Phase 1 | Pending |
-| FOUND-02 | Phase 1 | Pending |
-| FOUND-03 | Phase 1 | Pending |
+| FOUND-02 | Phase 1 | Complete |
+| FOUND-03 | Phase 1 | Complete |
 | FOUND-04 | Phase 1 | Pending |
 | FOUND-05 | Phase 1 | Pending |
 | FOUND-06 | Phase 1 | Pending |
-| FOUND-07 | Phase 1 | Pending |
-| FOUND-08 | Phase 1 | Pending |
-| FOUND-09 | Phase 1 | Pending |
+| FOUND-07 | Phase 1 | Complete |
+| FOUND-08 | Phase 1 | Complete |
+| FOUND-09 | Phase 1 | Complete |
 | FOUND-10 | Phase 1 | Pending |
-| FOUND-11 | Phase 1 | Pending |
+| FOUND-11 | Phase 1 | Complete |
 | FOUND-12 | Phase 1 | Pending |
 | FOUND-13 | Phase 1 | Pending |
 | FOUND-14 | Phase 1 | Pending |
 | FOUND-15 | Phase 1 | Pending |
-| FOUND-16 | Phase 1 | Pending |
+| FOUND-16 | Phase 1 | Complete |
 | DOC-03 | Phase 1 | Pending |
 | INPUT-01 | Phase 2 | Pending |
 | INPUT-02 | Phase 2 | Pending |

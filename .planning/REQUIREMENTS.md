@@ -61,11 +61,11 @@ Requirements for v2.0.0 release. Each maps to roadmap phases.
 
 ### Trigger & SKILL (SKILL)
 
-- [ ] **SKILL-01**: SKILL.md 全面重写：新名称、新流程、新触发词
-- [ ] **SKILL-02**: description 单行 <250 字符，英文优先 + 命令式语气
-- [ ] **SKILL-03**: 触发词改为通用开发关键词（开发需求/优化功能/修复bug/重构/开发/优化等）
-- [ ] **SKILL-04**: 所有路径变量改用 ${CLAUDE_SKILL_DIR}
-- [ ] **SKILL-05**: 需求入口主动询问用户来源（禅道 API / 本地文件）
+- [x] **SKILL-01**: SKILL.md 全面重写：新名称、新流程、新触发词
+- [x] **SKILL-02**: description 单行 <250 字符，英文优先 + 命令式语气
+- [x] **SKILL-03**: 触发词改为通用开发关键词（开发需求/优化功能/修复bug/重构/开发/优化等）
+- [x] **SKILL-04**: 所有路径变量改用 ${CLAUDE_SKILL_DIR}
+- [x] **SKILL-05**: 需求入口主动询问用户来源（禅道 API / 本地文件）
 
 ### Testing (TEST)
 
@@ -78,11 +78,11 @@ Requirements for v2.0.0 release. Each maps to roadmap phases.
 
 ### Documentation (DOC)
 
-- [ ] **DOC-01**: CLAUDE.md 全面更新（新项目名、新架构说明、新开发命令）
-- [ ] **DOC-02**: CONTRIBUTING.md 更新（移除 Java 构建说明、更新开发流程）
+- [x] **DOC-01**: CLAUDE.md 全面更新（新项目名、新架构说明、新开发命令）
+- [x] **DOC-02**: CONTRIBUTING.md 更新（移除 Java 构建说明、更新开发流程）
 - [ ] **DOC-03**: assets/config_template.properties 重命名键名（zentao → worklet 格式）
-- [ ] **DOC-04**: assets/tech_plan_template.md 更新为源无关格式（不假设禅道特有字段）
-- [ ] **DOC-05**: references/ 目录审查（保留通用指南，移除或更新 Java 专属内容）
+- [x] **DOC-04**: assets/tech_plan_template.md 更新为源无关格式（不假设禅道特有字段）
+- [x] **DOC-05**: references/ 目录审查（保留通用指南，移除或更新 Java 专属内容）
 
 ### Release (REL)
 
@@ -174,15 +174,15 @@ Deferred to future release. Tracked but not in current roadmap.
 | ENV-02 | Phase 4 | Complete |
 | ENV-03 | Phase 4 | Complete |
 | ENV-04 | Phase 4 | Complete |
-| SKILL-01 | Phase 5 | Pending |
-| SKILL-02 | Phase 5 | Pending |
-| SKILL-03 | Phase 5 | Pending |
-| SKILL-04 | Phase 5 | Pending |
-| SKILL-05 | Phase 5 | Pending |
-| DOC-01 | Phase 5 | Pending |
-| DOC-02 | Phase 5 | Pending |
-| DOC-04 | Phase 5 | Pending |
-| DOC-05 | Phase 5 | Pending |
+| SKILL-01 | Phase 5 | Complete |
+| SKILL-02 | Phase 5 | Complete |
+| SKILL-03 | Phase 5 | Complete |
+| SKILL-04 | Phase 5 | Complete |
+| SKILL-05 | Phase 5 | Complete |
+| DOC-01 | Phase 5 | Complete |
+| DOC-02 | Phase 5 | Complete |
+| DOC-04 | Phase 5 | Complete |
+| DOC-05 | Phase 5 | Complete |
 | REL-01 | Phase 5 | Pending |
 | REL-02 | Phase 5 | Pending |
 | REL-03 | Phase 5 | Pending |

@@ -47,7 +47,14 @@ Plans:
   2. Running the tool with a local .md file path produces equivalent normalized output through the same pipeline
   3. The Exporter converts Zentao HTML content to Markdown using markdownify (no regex chain) with correct image path references
   4. Subtask detection runs in Python code, not in SKILL.md logic
-**Plans**: TBD
+**Plans:** 5 plans
+
+Plans:
+- [ ] 02-01-PLAN.md -- BaseSource ABC + SourceRegistry (INPUT-01)
+- [ ] 02-02-PLAN.md -- Client fixes: timeout, streaming, exceptions, re.findall, subtask (CLIENT-01~05)
+- [ ] 02-03-PLAN.md -- Exporter rewrite with markdownify (EXPORT-01~03)
+- [ ] 02-04-PLAN.md -- FileSource + MarkdownReader for .md/.txt (INPUT-05)
+- [ ] 02-05-PLAN.md -- ZentaoSource full implementation + pipeline wiring (INPUT-02)
 
 ### Phase 3: Extended Sources and Testing
 **Goal**: The tool handles PDF, DOCX, and image files as input sources, and the entire codebase has pytest coverage validating each component

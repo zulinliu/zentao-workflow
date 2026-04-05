@@ -86,10 +86,10 @@ Requirements for v2.0.0 release. Each maps to roadmap phases.
 
 ### Release (REL)
 
-- [ ] **REL-01**: VERSION 更新为 2.0.0，全文档版本号同步
-- [ ] **REL-02**: CHANGELOG.md 更新 v2.0.0 完整变更记录
-- [ ] **REL-03**: README.md 全面重写（新名称 Worklet、新功能、新安装说明）
-- [ ] **REL-04**: release.yml CI/CD 更新（移除 Java 相关、更新目录结构和产物名称）
+- [x] **REL-01**: VERSION 更新为 2.0.0，全文档版本号同步
+- [x] **REL-02**: CHANGELOG.md 更新 v2.0.0 完整变更记录
+- [x] **REL-03**: README.md 全面重写（新名称 Worklet、新功能、新安装说明）
+- [x] **REL-04**: release.yml CI/CD 更新（移除 Java 相关、更新目录结构和产物名称）
 - [ ] **REL-05**: GitHub 仓库重命名为 worklet
 
 ## v2 Requirements
@@ -183,10 +183,10 @@ Deferred to future release. Tracked but not in current roadmap.
 | DOC-02 | Phase 5 | Complete |
 | DOC-04 | Phase 5 | Complete |
 | DOC-05 | Phase 5 | Complete |
-| REL-01 | Phase 5 | Pending |
-| REL-02 | Phase 5 | Pending |
-| REL-03 | Phase 5 | Pending |
-| REL-04 | Phase 5 | Pending |
+| REL-01 | Phase 5 | Complete |
+| REL-02 | Phase 5 | Complete |
+| REL-03 | Phase 5 | Complete |
+| REL-04 | Phase 5 | Complete |
 | REL-05 | Phase 5 | Pending |
 
 **Coverage:**

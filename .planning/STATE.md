@@ -4,13 +4,13 @@ milestone: v2.0.0
 milestone_name: milestone
 status: executing
 stopped_at: Completed 05-01-PLAN.md
-last_updated: "2026-04-05T13:58:02.858Z"
+last_updated: "2026-04-05T14:28:30.810Z"
 last_activity: 2026-04-05
 progress:
   total_phases: 5
-  completed_phases: 4
+  completed_phases: 5
   total_plans: 20
-  completed_plans: 18
+  completed_plans: 20
   percent: 0
 ---
 
@@ -26,7 +26,7 @@ See: .planning/PROJECT.md (updated 2026-04-04)
 ## Current Position
 
 Phase: 05 (skill.md-rewrite-and-release) — EXECUTING
-Plan: 2 of 3
+Plan: 3 of 3
 Status: Ready to execute
 Last activity: 2026-04-05
 
@@ -67,6 +67,8 @@ Progress: [..........] 0%
 | Phase 03-extended-sources-and-testing P04 | 120 | 4 tasks | 4 files |
 | Phase 04-pipeline-assembly-and-cli P02-02 | 3 | 3 tasks | 2 files |
 | Phase 05-skill-md-rewrite-and-release P05-01 | 8 | 3 tasks | 5 files |
+| Phase 05 P02 | 5 | 3 tasks | 3 files |
+| Phase 05 P05-03 | 2 | 2 tasks | 1 files |
 
 ## Accumulated Context
 

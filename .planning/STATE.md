@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v2.0.0
 milestone_name: milestone
 status: verifying
-stopped_at: Completed 02-01-SUMMARY.md
-last_updated: "2026-04-05T11:03:47.603Z"
+stopped_at: Completed 02-core-pipeline-02-02-PLAN.md
+last_updated: "2026-04-05T11:06:01.376Z"
 last_activity: 2026-04-05
 progress:
   total_phases: 5
   completed_phases: 1
   total_plans: 9
-  completed_plans: 5
+  completed_plans: 6
   percent: 0
 ---
 
@@ -57,6 +57,7 @@ Progress: [..........] 0%
 | Phase 01-foundation-and-rename P01-04 | 9 | 2 tasks | 8 files |
 | Phase 01-foundation-and-rename P01-03 | 183 | 2 tasks | 3 files |
 | Phase 02-core-pipeline P02-01 | 60 | 3 tasks | 4 files |
+| Phase 02-core-pipeline P02-02 | 9 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -69,6 +70,8 @@ Recent decisions affecting current work:
 - [Roadmap]: DOC-03 (config template rename) assigned to Phase 1 since it is foundation rename work, not documentation
 - [Phase 01-foundation-and-rename]: pyproject.toml created with setuptools backend, requires-python>=3.10, worklet 2.0.0
 - [Phase 01-foundation-and-rename]: TOML config with tomli+tomli_w, 0600 permissions, .worklet/ paths per D-04/D-06
+- [Phase 02-core-pipeline]: D-03: Subtask detection下沉到 service.py（CLIENT-05）
+- [Phase 02-core-pipeline]: D-05: client.py 修复（timeout、streaming、异常类型）
 
 ### Pending Todos
 
@@ -82,6 +85,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-05T11:03:47.600Z
-Stopped at: Completed 02-01-SUMMARY.md
+Last session: 2026-04-05T11:06:01.373Z
+Stopped at: Completed 02-core-pipeline-02-02-PLAN.md
 Resume file: None

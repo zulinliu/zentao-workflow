@@ -41,7 +41,7 @@ Requirements for v2.0.0 release. Each maps to roadmap phases.
 ### Client Fixes (CLIENT)
 
 - [ ] **CLIENT-01**: download_attachment/download_image 添加 timeout 参数
-- [ ] **CLIENT-02**: 大文件流式下载（stream=True + 原子写入 .tmp → rename）
+- [x] **CLIENT-02**: 大文件流式下载（stream=True + 原子写入 .tmp → rename）
 - [ ] **CLIENT-03**: 通用 Exception 替换为具体异常类型（ConnectionError/ValueError 等）
 - [ ] **CLIENT-04**: service.py 移除无用 re.findall() 调用
 - [ ] **CLIENT-05**: 子任务检测逻辑从 SKILL.md 下沉到 Python 代码层
@@ -151,7 +151,7 @@ Deferred to future release. Tracked but not in current roadmap.
 | INPUT-02 | Phase 2 | Complete |
 | INPUT-05 | Phase 2 | Complete |
 | CLIENT-01 | Phase 2 | Pending |
-| CLIENT-02 | Phase 2 | Pending |
+| CLIENT-02 | Phase 2 | Complete |
 | CLIENT-03 | Phase 2 | Pending |
 | CLIENT-04 | Phase 2 | Pending |
 | CLIENT-05 | Phase 2 | Pending |

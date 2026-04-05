@@ -47,12 +47,12 @@ Plans:
   2. Running the tool with a local .md file path produces equivalent normalized output through the same pipeline
   3. The Exporter converts Zentao HTML content to Markdown using markdownify (no regex chain) with correct image path references
   4. Subtask detection runs in Python code, not in SKILL.md logic
-**Plans:** 1/5 plans executed
+**Plans:** 3/5 plans executed
 
 Plans:
 - [x] 02-01-PLAN.md -- BaseSource ABC + SourceRegistry (INPUT-01)
 - [x] 02-02-PLAN.md -- Client fixes: timeout, streaming, exceptions, re.findall, subtask (CLIENT-01~05)
-- [ ] 02-03-PLAN.md -- Exporter rewrite with markdownify (EXPORT-01~03)
+- [x] 02-03-PLAN.md -- Exporter rewrite with markdownify (EXPORT-01~03)
 - [ ] 02-04-PLAN.md -- FileSource + MarkdownReader for .md/.txt (INPUT-05)
 - [ ] 02-05-PLAN.md -- ZentaoSource full implementation + pipeline wiring (INPUT-02)
 
@@ -99,7 +99,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation and Rename | 3/4 | In Progress|  |
-| 2. Core Pipeline | 1/5 | In Progress|  |
+| 2. Core Pipeline | 3/5 | In Progress|  |
 | 3. Extended Sources and Testing | 0/? | Not started | - |
 | 4. Pipeline Assembly and CLI | 0/? | Not started | - |
 | 5. SKILL.md Rewrite and Release | 0/? | Not started | - |

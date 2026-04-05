@@ -1,63 +1,36 @@
 ---
-name: zentao-workflow
+name: worklet
 description: |
-  禅道开发工作流助手 v1.6.0 - 自动化禅道需求/任务/Bug 下载与技术实现方案设计。
-
-  【v1.6.0 核心更新】
-  - 新增子任务检测与关联内容下载逻辑
-  - 解决子任务（如 task 61563）描述为空的问题
-  - 自动下载关联需求和父任务，确保获取完整需求描述
-
-  【v1.5.0 核心更新】
-  - 集成 superpowers:brainstorming 技能，技术方案设计效率提升 70%+
-  - 合并架构方案和编码方案为"技术实现方案"，消除重复探索
-  - 代理数量减少 85%（12-17个 → 1-2个），简单需求 5-8 分钟完成
-  - 聚焦三项核心内容：需求分析、架构设计、实现步骤
+  Worklet - 从需求到代码一键启动的开发者工作流助手
 
   【触发条件】当用户提到以下任一内容时，必须使用此技能：
-  - 禅道、zentao、chandao、禅道系统
-  - 需求、开发需求、story、需求ID
-  - 任务、task、任务ID
-  - Bug、缺陷、bug ID
-  - 下载禅道、获取需求、同步禅道
-  - 开发某需求/任务、开始开发
-  - 禅道URL链接（包含 story-view、task-view、bug-view）
-  - ID与类型组合：
-    - "需求39382"、"任务12345"、"Bug67890"（类型+ID）
-    - "39382需求"、"12345任务"、"67890Bug"（ID+类型）
-    - "禅道需求39382"、"开发任务12345"（前缀+类型+ID）
-  - 任何涉及禅道项目管理系统的请求
+  - 开发需求、优化功能、修复bug、重构、开发、优化
+  - 需求、任务、Bug（只要上下文暗示与开发相关）
 
-  【技能功能】
-  1. 自动检测 Java/Python 环境和 superpowers 技能依赖
-  2. 内置下载工具，无需额外安装
-  3. 交互式配置禅道服务器信息
-  4. 下载需求/任务/Bug 详情及附件到本地
-  5. 使用 brainstorming 技能生成技术实现方案
-  6. 子任务自动检测与关联内容下载（v1.6.0 新增）
+  【功能说明】
+  1. 自动检测 Python 环境和 superpowers 技能依赖
+  2. 支持从禅道 API 或本地文件/文件夹获取需求
+  3. 使用 brainstorming 技能生成技术实现方案
+  4. 驱动编码执行
 
   【依赖】需要 superpowers 插件 5.0.6+
-
-  即使只提到"需求"或"任务"关键词，只要上下文暗示与项目管理相关，也应触发此技能。
 ---
 
-# 禅道开发工作流助手
+# Worklet - 开发工作流助手
 
 ## 内置工具
 
-本技能内置两个版本的禅道下载工具，自动选择最佳运行时：
+本技能内置 Python 版本的下载工具：
 
 | 工具 | 位置 | 运行时 |
 |------|------|--------|
-| Python 版 | `{SKILL_DIR}/scripts/worklet.py` | Python 3.10+ |
+| Python 版 | `${CLAUDE_SKILL_DIR}/scripts/worklet.py` | Python 3.10+ |
 
 ## 执行步骤
 
-### Step 1: 环境检测与运行时选择
+### Step 1: 环境检测
 
-**1.1 检测 superpowers 技能（v1.5.0 新增）**
-
-**重要**：v1.5.0 版本依赖 superpowers 插件，必须先检测。
+**1.1 检测 superpowers 技能**
 
 使用 Bash 工具检测：
 
@@ -103,16 +76,14 @@ claude plugins add official superpowers
 python3 --version 2>&1 || python --version 2>&1
 ```
 
-**1.3 选择运行时**
+**检测结果处理**：
 
-| 检测结果 | 运行时选择 |
-|----------|-----------|
-| Python 可用 | 使用 Python 版 |
-| Python 不可用 | 询问用户选择安装 |
+| 检测结果 | 处理方式 |
+|----------|----------|
+| Python 可用 | 继续执行 |
+| Python 不可用 | 询问用户安装 |
 
-**1.3 询问用户选择**
-
-如果两个环境都不可用，使用 AskUserQuestion 询问：
+**如果 Python 未安装**，使用 AskUserQuestion 询问：
 
 ```
 未检测到 Python 运行环境，请选择要安装的环境：
@@ -138,16 +109,16 @@ sudo apt update && sudo apt install python3 python3-pip -y
 安装完成后，安装 Python 依赖：
 
 ```bash
-pip3 install requests
+pip3 install requests tomli tomli-w
 ```
 
-### Step 2: 禅道配置初始化
+### Step 2: 配置初始化
 
 **配置文件优先级**（支持多项目开发）：
 
 ```
-1. 工作区配置: {工作区}/.chandao/config.properties  ← 最高优先
-2. 全局配置: ~/.chandao/config.properties           ← 兜底配置
+1. 工作区配置: {工作区}/.worklet/config.toml  ← 最高优先
+2. 全局配置: ~/.worklet/config.toml           ← 兜底配置
 ```
 
 **存储目录说明**：
@@ -186,7 +157,7 @@ AskUserQuestion:
         - label: "(Other)"
           description: "输入您的登录密码"
 
-    - question: "禅道内容存储目录（可选）"
+    - question: "需求内容存储目录（可选）"
       header: "存储目录"
       options:
         - label: "使用当前目录"
@@ -208,32 +179,34 @@ AskUserQuestion:
 
 ```bash
 # 保存到工作区（推荐，支持多项目）
-mkdir -p "{工作区}/.chandao"
-cat > "{工作区}/.chandao/config.properties" << 'EOF'
-zentao.url=<用户提供的地址>
-zentao.username=<用户提供的用户名>
-zentao.password=<用户提供的密码>
+mkdir -p "{工作区}/.worklet"
+cat > "{工作区}/.worklet/config.toml" << 'EOF'
+[zentao]
+url = "<用户提供的地址>"
+username = "<用户提供的用户名>"
+password = "<用户提供的密码>"
 EOF
 
 # 或保存到全局（所有项目共享）
-mkdir -p ~/.chandao
-cat > ~/.chandao/config.properties << 'EOF'
-zentao.url=<用户提供的地址>
-zentao.username=<用户提供的用户名>
-zentao.password=<用户提供的密码>
+mkdir -p ~/.worklet
+cat > ~/.worklet/config.toml << 'EOF'
+[zentao]
+url = "<用户提供的地址>"
+username = "<用户提供的用户名>"
+password = "<用户提供的密码>"
 EOF
 ```
 
 **配置完成后展示**：
 
 ```
-✓ 禅道配置已完成
+✓ Worklet 配置已完成
 
-  配置来源: 工作区配置 (.chandao/config.properties)
+  配置来源: 工作区配置 (.worklet/config.toml)
   服务器: https://zentao.example.com
   用户名: your_username
-  存储目录: /path/to/workspace  ← 禅道内容将保存在此目录
-  运行时: Java 1.8.0 / Python 3.10
+  存储目录: /path/to/workspace  ← 需求内容将保存在此目录
+  运行时: Python 3.10
 ```
 
 **如果配置已存在**：
@@ -244,7 +217,7 @@ EOF
 ```
 AskUserQuestion:
   questions:
-    - question: "禅道内容存储目录"
+    - question: "需求内容存储目录"
       header: "存储目录"
       options:
         - label: "使用当前工作区"
@@ -253,9 +226,32 @@ AskUserQuestion:
           description: "输入自定义存储路径"
 ```
 
-### Step 3: 获取禅道内容
+### Step 2.5: 需求来源选择
 
-**3.1 解析用户输入**
+**重要**：在获取需求之前，必须询问用户需求来源。
+
+```
+AskUserQuestion:
+  questions:
+    - question: "需求从哪里获取？"
+      header: "需求来源"
+      options:
+        - label: "禅道 API"
+          description: "从禅道服务器下载需求/任务/Bug"
+        - label: "本地文件"
+          description: "从本地文件/文件夹读取"
+```
+
+| 选择 | 处理方式 |
+|------|----------|
+| 禅道 API | 继续 Step 3（禅道下载流程） |
+| 本地文件 | 继续 Step 3（本地文件流程） |
+
+### Step 3: 获取需求内容
+
+#### 3.1 禅道 API 流程
+
+**3.1.1 解析用户输入**
 
 从用户消息中提取禅道 ID 或 URL：
 
@@ -267,11 +263,11 @@ AskUserQuestion:
 - 关键词组合: 开发需求38817、任务12345、bug 67890
 ```
 
-**3.2 如果无法从消息中提取 ID**
+**3.1.2 如果无法从消息中提取 ID**
 
 使用 AskUserQuestion 询问用户。
 
-**3.3 多内容下载提醒**
+**3.1.3 多内容下载提醒**
 
 如果用户要下载多个内容，**必须主动提醒**：
 
@@ -284,26 +280,21 @@ AskUserQuestion:
 请确认是否继续下载这些内容？
 ```
 
-**3.4 执行下载**
+**3.1.4 执行下载**
 
-**Python 版本**：
 ```bash
-# Linux/macOS
-python3 "{SKILL_DIR}/scripts/worklet.py" -t {type} -i {id}
-
-# Windows (注意：使用正斜杠或双反斜杠)
-python3 "{SKILL_DIR}/scripts/worklet.py" -t {type} -i {id}
+# Linux/macOS/Windows
+python3 "${CLAUDE_SKILL_DIR}/scripts/worklet.py" -t {type} -i {id}
 ```
 
 参数说明：
 - `{type}`: story / task / bug
 - `{id}`: 禅道 ID
-- `-Dfile.encoding=UTF-8`: 确保跨平台中文显示正常
 - 路径使用**双引号**包裹，避免空格问题
 
-**3.5 子任务检测与关联内容下载（v1.6.0 新增）**
+**3.1.5 子任务检测与关联内容下载**
 
-**问题背景**：禅道的子任务（如 task 61563）的 `desc` 字段 API 返回为空，实际需求描述存储在：
+**问题背景**：禅道的子任务的 `desc` 字段 API 返回为空，实际需求描述存储在：
 - 关联的需求（story）
 - 父任务（parent task）
 
@@ -329,10 +320,10 @@ fi
 
 ```bash
 # 下载关联需求
-python3 "{SKILL_DIR}/scripts/worklet.py" -t story -i {storyId}
+python3 "${CLAUDE_SKILL_DIR}/scripts/worklet.py" -t story -i {storyId}
 
 # 下载父任务
-python3 "{SKILL_DIR}/scripts/worklet.py" -t task -i {parentTaskId}
+python3 "${CLAUDE_SKILL_DIR}/scripts/worklet.py" -t task -i {parentTaskId}
 ```
 
 **下载完成后展示**：
@@ -352,7 +343,7 @@ python3 "{SKILL_DIR}/scripts/worklet.py" -t task -i {parentTaskId}
   附件：3 个文件已下载到 attachments/task/61563/
 ```
 
-**3.6 需求分析引导**
+**3.1.6 需求分析引导**
 
 下载完成后，展示需求的核心描述内容（从关联需求/父任务中提取），帮助用户快速理解：
 
@@ -375,6 +366,42 @@ python3 "{SKILL_DIR}/scripts/worklet.py" -t task -i {parentTaskId}
 3. 时间格式：yyyy-MM-dd HH:mm
 ```
 
+#### 3.2 本地文件流程
+
+**3.2.1 解析用户输入**
+
+从用户消息中提取本地文件路径：
+
+```
+支持的输入格式：
+- 单个文件: /path/to/requirement.md
+- 文件夹: /path/to/requirements/
+- 多个文件: /path/to/req1.md /path/to/req2.md
+```
+
+**3.2.2 如果无法从消息中提取路径**
+
+使用 AskUserQuestion 询问用户。
+
+**3.2.3 执行本地文件读取**
+
+```bash
+# 读取本地文件内容
+cat /path/to/requirement.md
+
+# 或递归读取文件夹
+find /path/to/requirements/ -type f \( -name "*.md" -o -name "*.txt" -o -name "*.pdf" \) 2>/dev/null
+```
+
+**3.2.4 支持的文件格式**
+
+| 格式 | 处理方式 |
+|------|----------|
+| Markdown (.md) | 直接读取内容 |
+| 文本 (.txt) | 直接读取内容 |
+| PDF (.pdf) | 使用 PDF 解析工具提取文本 |
+| Word (.docx) | 使用 Word 解析工具提取文本 |
+
 ### Step 4: 技术实现方案设计
 
 **4.1 询问用户是否开始设计（必须执行）**
@@ -384,7 +411,7 @@ python3 "{SKILL_DIR}/scripts/worklet.py" -t task -i {parentTaskId}
 ```
 AskUserQuestion:
   questions:
-    - question: "需求内容已下载完成。是否开始技术实现方案设计？"
+    - question: "需求内容已获取完成。是否开始技术实现方案设计？"
       header: "下一步"
       options:
         - label: "是，开始设计（推荐）"
@@ -412,9 +439,9 @@ Skill(skill: "superpowers:brainstorming")
 ```
 📊 技术实现方案设计 - 上下文信息
 
-【禅道内容】
-- 类型: {story/task/bug}
-- ID: {id}
+【需求内容】
+- 类型: {story/task/bug/local}
+- ID/路径: {id or file path}
 - 标题: {title}
 - 内容文件: {workspace}/{type}/{id}-{title}.md
 - 附件目录: {workspace}/attachments/{type}/{id}/
@@ -435,7 +462,7 @@ Skill(skill: "superpowers:brainstorming")
 
 brainstorming 技能将自动执行：
 
-1. **探索项目上下文** - 读取禅道文件、查看项目结构
+1. **探索项目上下文** - 读取需求文件、查看项目结构
 2. **提出澄清问题** - 通过 AskUserQuestion 逐一询问
 3. **提出 2-3 种技术方案** - 包含权衡分析和推荐
 4. **编写技术实现方案** - 保存到工作区
@@ -448,7 +475,7 @@ brainstorming 技能将自动执行：
 ```
 📊 技术实现方案设计进度：
 
-[✓] 阶段 1/3: 阅读禅道需求内容
+[✓] 阶段 1/3: 阅读需求内容
 [●] 阶段 2/3: 分析项目代码 ← 进行中...
 [ ] 阶段 3/3: 编写技术实现方案
 ```
@@ -563,23 +590,23 @@ AskUserQuestion:
 
 ### 必须输出
 
-1. **环境检测结果** - 显示使用的运行时（Java/Python）和 superpowers 技能状态
+1. **环境检测结果** - 显示使用的运行时和 superpowers 技能状态
 2. **配置确认信息** - 包含配置来源和存储目录
-3. **下载结果** - 文件路径、附件数量
+3. **获取结果** - 文件路径、附件数量
 4. **技术实现方案文档** - Markdown 格式，保存在工作区根目录
 
 ### 文件结构
 
 ```
 {workspace}/
-├── .chandao/
-│   └── config.properties          # 工作区配置（可选）
-├── story_39382_技术实现方案.md    # 技术实现方案文档（v1.5.0 新格式）
-├── story/                         # 禅道内容目录
+├── .worklet/
+│   └── config.toml                # 工作区配置（可选）
+├── {type}_{id}_技术实现方案.md     # 技术实现方案文档
+├── story/                         # 需求目录
 │   └── 39382-需求标题.md
-├── task/                          # 任务 Markdown 文件
+├── task/                          # 任务目录
 │   └── 12345-任务名称.md
-├── bug/                           # Bug Markdown 文件
+├── bug/                           # Bug 目录
 │   └── 67890-Bug标题.md
 └── attachments/                   # 附件目录
     ├── story/39382/
@@ -589,17 +616,16 @@ AskUserQuestion:
 
 ## 注意事项
 
-1. **superpowers 技能依赖** - v1.5.0 需要安装 superpowers 插件 5.0.6+
+1. **superpowers 技能依赖** - 需要安装 superpowers 插件 5.0.6+
 2. **跨平台兼容** - 支持 Windows/macOS/Linux
 3. **配置优先级** - 工作区配置 > 全局配置
 4. **主动沟通** - 方案设计中有疑问必须主动询问
-5. **效率优化** - v1.5.0 通过集成 brainstorming 技能，代理数量减少 85%+
-6. **子任务处理** - v1.6.0 自动检测子任务并下载关联需求和父任务
+5. **效率优化** - 通过集成 brainstorming 技能，代理数量减少 85%+
+6. **子任务处理** - 自动检测子任务并下载关联需求和父任务
 
 ## 相关资源
 
-- `{SKILL_DIR}/scripts/worklet.py` - Python 版内置工具
-- `{SKILL_DIR}/scripts/worklet/` - Python 版内置工具包
-- `{SKILL_DIR}/assets/tech_plan_template.md` - 技术方案模板
-- `{SKILL_DIR}/references/java_project_guide.md` - Java 项目分析指南
-- `{SKILL_DIR}/references/react_project_guide.md` - React 项目分析指南
+- `${CLAUDE_SKILL_DIR}/scripts/worklet.py` - Python 版内置工具
+- `${CLAUDE_SKILL_DIR}/scripts/worklet/` - Python 版内置工具包
+- `${CLAUDE_SKILL_DIR}/assets/tech_plan_template.md` - 技术方案模板
+- `${CLAUDE_SKILL_DIR}/references/react_project_guide.md` - React 项目分析指南

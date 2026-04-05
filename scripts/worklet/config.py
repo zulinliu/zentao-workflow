@@ -4,33 +4,47 @@
 Worklet - configuration management
 
 Config priority:
-1. CLI arguments (highest)
-2. Workspace config: {workspace}/.chandao/config.properties
-3. Global config: ~/.chandao/config.properties (lowest)
+1. Explicit config path (highest)
+2. Workspace config: {workspace}/.worklet/config.toml
+3. Global config: ~/.worklet/config.toml (lowest)
 
-Storage directory:
-- Default: current workspace root
-- Not persisted to config file, determined dynamically at runtime
+Output directory defaults to .worklet/ under current working directory (or provided workspace_dir).
 """
 
 import os
+import stat
+import sys
 from pathlib import Path
+
+if sys.version_info >= (3, 11):
+    import tomllib
+else:
+    import tomli as tomllib
+
+import tomli_w
 
 
 class WorkletConfig:
-    """Worklet configuration manager"""
+    """Worklet configuration manager.
 
-    # Config file locations
-    WORKSPACE_CONFIG = ".chandao/config.properties"
-    GLOBAL_CONFIG = "~/.chandao/config.properties"
+    Config priority:
+    1. Explicit config path (highest)
+    2. Workspace config: {workspace}/.worklet/config.toml
+    3. Global config: ~/.worklet/config.toml (lowest)
+
+    Output directory defaults to .worklet/ under current working directory (or provided workspace_dir).
+    """
+
+    WORKSPACE_CONFIG = ".worklet/config.toml"
+    GLOBAL_CONFIG = "~/.worklet/config.toml"
 
     def __init__(self):
         self.base_url: str | None = None
         self.username: str | None = None
         self.password: str | None = None
         self.output_dir: str = os.getcwd()
-        self.connect_timeout: int = 30000  # milliseconds
-        self.read_timeout: int = 60000  # milliseconds
+        self.connect_timeout: int = 30
+        self.read_timeout: int = 60
         self._config_source: str | None = None
 
     @classmethod
@@ -54,10 +68,10 @@ class WorkletConfig:
                 config._config_source = str(path)
                 break
 
-        if workspace_dir and not config.output_dir:
-            config.output_dir = workspace_dir
-        elif not config.output_dir:
-            config.output_dir = os.getcwd()
+        if workspace_dir:
+            config.output_dir = str(Path(workspace_dir) / ".worklet")
+        else:
+            config.output_dir = str(Path.cwd() / ".worklet")
 
         return config
 
@@ -73,32 +87,33 @@ class WorkletConfig:
             workspace_config = Path(workspace_dir) / cls.WORKSPACE_CONFIG
             files.append(workspace_config)
 
-        global_config = Path.home() / ".chandao" / "config.properties"
+        global_config = Path.home() / ".worklet" / "config.toml"
         files.append(global_config)
 
         return files
 
     def _load_from_file(self, path: Path):
-        """Load config from file"""
+        """Load config from TOML file."""
         try:
-            with open(path, "r", encoding="utf-8") as f:
-                for line in f:
-                    line = line.strip()
-                    if not line or line.startswith("#"):
-                        continue
-                    if "=" in line:
-                        key, value = line.split("=", 1)
-                        key = key.strip()
-                        value = value.strip()
+            with open(path, "rb") as f:
+                data = tomllib.load(f)
 
-                        if key == "zentao.url":
-                            self.base_url = value
-                        elif key == "zentao.username":
-                            self.username = value
-                        elif key == "zentao.password":
-                            self.password = value
+            zentao = data.get("zentao", {})
+            self.base_url = zentao.get("url")
+            self.username = zentao.get("username")
+            self.password = zentao.get("password")
 
-            print(f"Loaded config: {path}")
+            network = data.get("network", {})
+            if "connect_timeout" in network:
+                self.connect_timeout = network["connect_timeout"]
+            if "read_timeout" in network:
+                self.read_timeout = network["read_timeout"]
+
+            output = data.get("output", {})
+            if "dir" in output:
+                self.output_dir = output["dir"]
+
+            print(f"Config loaded: {path}")
         except Exception as e:
             print(f"Failed to load config: {e}")
 
@@ -110,23 +125,30 @@ class WorkletConfig:
 
     def save_to_global(self):
         """Save config to global location"""
-        path = Path.home() / ".chandao" / "config.properties"
+        path = Path.home() / ".worklet" / "config.toml"
         self._save_to_file(path)
         print(f"Config saved to global: {path}")
 
     def _save_to_file(self, path: Path):
-        """Save config to specified file"""
+        """Save config to TOML file with 0600 permissions."""
         path.parent.mkdir(parents=True, exist_ok=True)
 
-        with open(path, "w", encoding="utf-8") as f:
-            f.write("# Worklet config\n")
-            f.write("# Note: output.dir is not persisted, determined at runtime\n")
-            if self.base_url:
-                f.write(f"zentao.url={self.base_url}\n")
-            if self.username:
-                f.write(f"zentao.username={self.username}\n")
-            if self.password:
-                f.write(f"zentao.password={self.password}\n")
+        data: dict = {"zentao": {}, "output": {}, "network": {}}
+        if self.base_url:
+            data["zentao"]["url"] = self.base_url
+        if self.username:
+            data["zentao"]["username"] = self.username
+        if self.password:
+            data["zentao"]["password"] = self.password
+
+        data["output"]["dir"] = self.output_dir
+        data["network"]["connect_timeout"] = self.connect_timeout
+        data["network"]["read_timeout"] = self.read_timeout
+
+        with open(path, "wb") as f:
+            tomli_w.dump(data, f)
+
+        os.chmod(path, stat.S_IRUSR | stat.S_IWUSR)
 
     def is_initialized(self) -> bool:
         """Check if config is initialized"""
@@ -141,19 +163,20 @@ class WorkletConfig:
         if self.is_initialized():
             return None
 
-        prompt = """Worklet config not initialized. Please provide config via one of:
+        prompt = """Worklet configuration not initialized. Provide config via:
 
-Method 1: CLI arguments
-  python worklet.py --url <zentao_url> --username <user> --password <pass>
+Option 1: Command-line arguments
+  python worklet.py --url <server> --username <user> --password <pass>
 
-Method 2: Workspace config file (recommended for multi-project)
-  Create .chandao/config.properties in workspace root:
-  zentao.url=https://your-zentao-server.com
-  zentao.username=your_username
-  zentao.password=your_password
+Option 2: Workspace config (recommended, supports multi-project)
+  Create .worklet/config.toml in your workspace root:
+  [zentao]
+  url = "https://your-zentao-server.com"
+  username = "your_username"
+  password = "your_password"
 
-Method 3: Global config (shared across all projects)
-  Create ~/.chandao/config.properties
+Option 3: Global config
+  Create ~/.worklet/config.toml
 
-Note: output.dir is not persisted to config, determined at runtime."""
+Note: Output directory is determined dynamically each run."""
         return prompt

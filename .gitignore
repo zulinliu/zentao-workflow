@@ -40,9 +40,7 @@ Thumbs.db
 
 # Project specific
 *.log
-chandao-data/
-chandao-data-*/
-attachments/
+.worklet/
 
 # Development only (only in dev branch, not merged to main)
 # CLAUDE.md - development guide, stays in dev branch

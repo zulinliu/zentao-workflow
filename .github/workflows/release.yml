@@ -27,23 +27,22 @@ jobs:
       - name: Create release package
         run: |
           # 创建带目录结构的临时目录
-          mkdir -p release_temp/zentao-workflow
+          mkdir -p release_temp/worklet
 
-          # 只复制 SKILL 必须的文件到 zentao-workflow 子目录
-          cp SKILL.md release_temp/zentao-workflow/
-          cp -r assets release_temp/zentao-workflow/
-          cp -r references release_temp/zentao-workflow/
+          # 只复制 SKILL 必须的文件到 worklet 子目录
+          cp SKILL.md release_temp/worklet/
+          cp -r assets release_temp/worklet/
+          cp -r references release_temp/worklet/
 
-          # 复制 scripts 目录，但排除 java-src 子目录
-          mkdir -p release_temp/zentao-workflow/scripts
-          cp scripts/chandao-fetch.jar release_temp/zentao-workflow/scripts/ 2>/dev/null || true
-          cp scripts/chandao_fetch.py release_temp/zentao-workflow/scripts/ 2>/dev/null || true
-          cp scripts/requirements.txt release_temp/zentao-workflow/scripts/ 2>/dev/null || true
-          cp -r scripts/chandao_fetch release_temp/zentao-workflow/scripts/ 2>/dev/null || true
+          # 复制 scripts 目录
+          mkdir -p release_temp/worklet/scripts
+          cp scripts/worklet.py release_temp/worklet/scripts/ 2>/dev/null || true
+          cp scripts/requirements.txt release_temp/worklet/scripts/ 2>/dev/null || true
+          cp -r scripts/worklet release_temp/worklet/scripts/ 2>/dev/null || true
 
-          # 创建 zip 包（包含 zentao-workflow 目录）
+          # 创建 zip 包（包含 worklet 目录）
           cd release_temp
-          zip -r ../zentao-workflow-${{ steps.version.outputs.version }}.zip zentao-workflow
+          zip -r ../worklet-${{ steps.version.outputs.version }}.zip worklet
           cd ..
 
           # 清理临时目录
@@ -51,12 +50,12 @@ jobs:
 
           # 显示包内容
           echo "📦 Release package contents:"
-          unzip -l zentao-workflow-${{ steps.version.outputs.version }}.zip
+          unzip -l worklet-${{ steps.version.outputs.version }}.zip
 
           # 显示包大小
           echo ""
           echo "📦 Package size:"
-          ls -lh zentao-workflow-${{ steps.version.outputs.version }}.zip
+          ls -lh worklet-${{ steps.version.outputs.version }}.zip
 
       - name: Generate release notes
         id: notes
@@ -71,9 +70,9 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ steps.version.outputs.version }}
-          name: Zentao Workflow Skill ${{ steps.version.outputs.version }}
+          name: Worklet ${{ steps.version.outputs.version }}
           body: |
-            ## 禅道开发工作流助手 ${{ steps.version.outputs.version }}
+            ## Worklet ${{ steps.version.outputs.version }}
 
             ${{ steps.notes.outputs.notes }}
 
@@ -83,40 +82,39 @@ jobs:
 
             **下载解压即可使用**
 
-            1. 下载下方的 `zentao-workflow-${{ steps.version.outputs.version }}.zip`
+            1. 下载下方的 `worklet-${{ steps.version.outputs.version }}.zip`
             2. 解压到 Claude Code 技能目录：
 
             ```bash
             # Linux/macOS
             mkdir -p ~/.claude/skills
-            unzip zentao-workflow-${{ steps.version.outputs.version }}.zip -d ~/.claude/skills/
+            unzip worklet-${{ steps.version.outputs.version }}.zip -d ~/.claude/skills/
 
             # Windows PowerShell
             New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.claude\skills"
-            Expand-Archive zentao-workflow-${{ steps.version.outputs.version }}.zip -DestinationPath "$env:USERPROFILE\.claude\skills"
+            Expand-Archive worklet-${{ steps.version.outputs.version }}.zip -DestinationPath "$env:USERPROFILE\.claude\skills"
             ```
 
             3. 重启 Claude Code 即可使用
 
-            > 💡 zip 包内已包含 `zentao-workflow/` 目录，解压后直接可用
+            > 💡 zip 包内已包含 `worklet/` 目录，解压后直接可用
 
             ## 环境要求
 
-            只需满足以下**任一**环境：
-            - Java 8+
-            - Python 3.6+
+            只需满足以下环境：
+            - Python 3.10+
 
             ## 包内容
 
             ```
-            zentao-workflow/
+            worklet/
             ├── SKILL.md              # 技能主文件
-            ├── scripts/              # 内置工具（Java jar + Python）
+            ├── scripts/              # 内置工具（Python）
             ├── assets/               # 模板资源
             └── references/           # 项目分析指南
             ```
 
           files: |
-            zentao-workflow-${{ steps.version.outputs.version }}.zip
+            worklet-${{ steps.version.outputs.version }}.zip
           draft: false
           prerelease: false

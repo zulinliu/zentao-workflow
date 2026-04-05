@@ -1,53 +1,50 @@
-# 打包时排除的文件列表
-# 这些文件不会包含在 release 的 zip 包中
+# Files excluded from release packaging
+# These files are not included in the release zip
 
-# 用户文档（不需要加载到 skill 上下文）
+# User documentation (not needed in skill context)
 README.md
 LICENSE
 CHANGELOG.md
 VERSION
 
-# 开发环境配置
+# Development configuration
 CLAUDE.md
 CONTRIBUTING.md
 
-# Git 相关
+# Git
 .git/
 .gitignore
 .gitattributes
 
-# CI/CD 配置
+# CI/CD
 .github/
-.release-ignore
 
-# IDE 配置
+# IDE
 .idea/
 .vscode/
 *.swp
 *.swo
 
-# Python 缓存
+# Python caches
 __pycache__/
 *.py[cod]
 *.pyo
 .pytest_cache/
 .coverage
 
-# 环境文件
+# Environment
 .env
 .venv/
 venv/
 
-# 临时文件
+# Temp files
 *.log
 *.tmp
 .DS_Store
 Thumbs.db
 
-# 测试输出
-chandao-data/
-chandao-data-*/
-attachments/
+# Test and build output
+.worklet/
 
-# Java 源码（release 只包含编译后的 JAR）
-scripts/java-src/
+# Project metadata (not needed in skill runtime)
+pyproject.toml

@@ -49,8 +49,7 @@ description: |
 
 | 工具 | 位置 | 运行时 |
 |------|------|--------|
-| Java 版 | `{SKILL_DIR}/scripts/chandao-fetch.jar` | Java 8+ |
-| Python 版 | `{SKILL_DIR}/scripts/chandao_fetch.py` | Python 3.6+ |
+| Python 版 | `{SKILL_DIR}/scripts/worklet.py` | Python 3.10+ |
 
 ## 执行步骤
 
@@ -97,12 +96,9 @@ claude plugins add official superpowers
 
 **1.2 检测运行环境**
 
-使用 Bash 工具依次检测：
+使用 Bash 工具检测 Python：
 
 ```bash
-# 检测 Java
-java -version 2>&1 | head -1
-
 # 检测 Python
 python3 --version 2>&1 || python --version 2>&1
 ```
@@ -111,20 +107,17 @@ python3 --version 2>&1 || python --version 2>&1
 
 | 检测结果 | 运行时选择 |
 |----------|-----------|
-| 仅 Java 可用 | 使用 Java 版 |
-| 仅 Python 可用 | 使用 Python 版 |
-| 两者都可用 | 优先使用 Java 版（更稳定） |
-| 两者都不可用 | 询问用户选择安装哪个 |
+| Python 可用 | 使用 Python 版 |
+| Python 不可用 | 询问用户选择安装 |
 
 **1.3 询问用户选择**
 
 如果两个环境都不可用，使用 AskUserQuestion 询问：
 
 ```
-未检测到 Java 或 Python 运行环境，请选择要安装的环境：
+未检测到 Python 运行环境，请选择要安装的环境：
 
 1. Python（推荐） - 轻量级，安装快速
-2. Java - 更稳定，但需要下载 JDK
 
 请选择：
 ```
@@ -293,26 +286,13 @@ AskUserQuestion:
 
 **3.4 执行下载**
 
-**重要**：路径格式需要适配操作系统：
-- **Windows**: 使用双引号包裹路径，正斜杠 `/` 或双反斜杠 `\\`
-- **Linux/macOS**: 直接使用正斜杠 `/`
-
-**Java 版本**：
-```bash
-# Linux/macOS
-java -Dfile.encoding=UTF-8 -Dconsole.encoding=UTF-8 -jar "{SKILL_DIR}/scripts/chandao-fetch.jar" -t {type} -i {id}
-
-# Windows
-java -Dfile.encoding=UTF-8 -Dconsole.encoding=UTF-8 -jar "{SKILL_DIR}/scripts/chandao-fetch.jar" -t {type} -i {id}
-```
-
 **Python 版本**：
 ```bash
 # Linux/macOS
-python3 "{SKILL_DIR}/scripts/chandao_fetch.py" -t {type} -i {id}
+python3 "{SKILL_DIR}/scripts/worklet.py" -t {type} -i {id}
 
 # Windows (注意：使用正斜杠或双反斜杠)
-python3 "{SKILL_DIR}/scripts/chandao_fetch.py" -t {type} -i {id}
+python3 "{SKILL_DIR}/scripts/worklet.py" -t {type} -i {id}
 ```
 
 参数说明：
@@ -349,10 +329,10 @@ fi
 
 ```bash
 # 下载关联需求
-java -Dfile.encoding=UTF-8 -Dconsole.encoding=UTF-8 -jar "{SKILL_DIR}/scripts/chandao-fetch.jar" -t story -i {storyId}
+python3 "{SKILL_DIR}/scripts/worklet.py" -t story -i {storyId}
 
 # 下载父任务
-java -Dfile.encoding=UTF-8 -Dconsole.encoding=UTF-8 -jar "{SKILL_DIR}/scripts/chandao-fetch.jar" -t task -i {parentTaskId}
+python3 "{SKILL_DIR}/scripts/worklet.py" -t task -i {parentTaskId}
 ```
 
 **下载完成后展示**：
@@ -611,16 +591,15 @@ AskUserQuestion:
 
 1. **superpowers 技能依赖** - v1.5.0 需要安装 superpowers 插件 5.0.6+
 2. **跨平台兼容** - 支持 Windows/macOS/Linux
-3. **运行时优先级** - Java > Python（两者都可用时）
-4. **配置优先级** - 工作区配置 > 全局配置
-5. **主动沟通** - 方案设计中有疑问必须主动询问
-6. **效率优化** - v1.5.0 通过集成 brainstorming 技能，代理数量减少 85%+
-7. **子任务处理** - v1.6.0 自动检测子任务并下载关联需求和父任务
+3. **配置优先级** - 工作区配置 > 全局配置
+4. **主动沟通** - 方案设计中有疑问必须主动询问
+5. **效率优化** - v1.5.0 通过集成 brainstorming 技能，代理数量减少 85%+
+6. **子任务处理** - v1.6.0 自动检测子任务并下载关联需求和父任务
 
 ## 相关资源
 
-- `{SKILL_DIR}/scripts/chandao-fetch.jar` - Java 版内置工具
-- `{SKILL_DIR}/scripts/chandao_fetch/` - Python 版内置工具
+- `{SKILL_DIR}/scripts/worklet.py` - Python 版内置工具
+- `{SKILL_DIR}/scripts/worklet/` - Python 版内置工具包
 - `{SKILL_DIR}/assets/tech_plan_template.md` - 技术方案模板
 - `{SKILL_DIR}/references/java_project_guide.md` - Java 项目分析指南
 - `{SKILL_DIR}/references/react_project_guide.md` - React 项目分析指南

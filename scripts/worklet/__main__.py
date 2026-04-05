@@ -18,40 +18,43 @@ from .env import EnvDetector
 from .service import WorkletService
 from .sources.base import SourceRegistry
 from .sources.zentao import ZentaoSource
+from .input import InputParser, InputType
 
 
-def detect_input_type(identifier: str) -> str:
-    """Detect input type.
+def resolve_source(identifier: str, config: WorkletConfig):
+    """Resolve identifier to appropriate source instance.
 
-    Returns:
-        'zentao' for Zentao ID format
-        'file' for existing file
-        'folder' for existing directory
-        'unknown' if cannot determine
+    Uses InputParser.detect() to determine type, then dispatches
+    to correct Source via SourceRegistry.
     """
-    from pathlib import Path
+    input_type = InputParser.detect(identifier)
 
-    identifier = identifier.strip()
+    if input_type == InputType.UNKNOWN:
+        raise ValueError(f"Cannot determine input type for: {identifier}")
 
-    # Check Zentao ID patterns
-    if '-' in identifier:
-        prefix = identifier.split('-')[0].lower()
-        if prefix in ('story', 'task', 'bug'):
-            try:
-                int(identifier.split('-')[1])
-                return 'zentao'
-            except ValueError:
-                pass
+    registry = SourceRegistry()
 
-    # Check if it's a file or folder
-    path = Path(identifier)
-    if path.exists():
-        if path.is_file():
-            return 'file'
-        elif path.is_dir():
-            return 'folder'
+    if input_type == InputType.ZENTAO:
+        source_cls = registry.get('zentao')
+        if source_cls is None:
+            raise ValueError("Zentao source not available")
+        # Parse Zentao ID (handles bare numbers like "38817")
+        parsed = InputParser.parse_zentao_id(identifier)
+        if parsed is None:
+            raise ValueError(f"Invalid Zentao ID: {identifier}")
+        zentao_type, numeric_id = parsed
+        resolved_id = f"{zentao_type}-{numeric_id}"
+        return source_cls(config), resolved_id
 
-    return 'unknown'
+    elif input_type == InputType.FILE:
+        from .sources.file import FileSource
+        return FileSource(), identifier
+
+    elif input_type == InputType.FOLDER:
+        from .sources.folder import FolderSource
+        return FolderSource(), identifier
+
+    raise ValueError(f"Unsupported input type: {input_type}")
 
 
 def parse_args():
@@ -156,45 +159,47 @@ def main():
     if args.url or args.username or args.password:
         config.save_to_workspace(workspace_dir)
 
-    # Parse ID list
-    ids: list[int] = []
+    # Collect identifiers (ID list becomes raw identifiers for auto-detect)
+    identifiers: list[str] = []
     if args.id:
-        ids.append(args.id)
+        identifiers.append(str(args.id))
     if args.ids:
-        ids.extend([int(x.strip()) for x in args.ids.split(",") if x.strip()])
+        identifiers.extend([x.strip() for x in args.ids.split(",") if x.strip()])
 
-    # Validate arguments
-    if not args.type:
-        print("Error: must specify content type (-t story/task/bug)")
+    if not identifiers:
+        print("Error: must specify identifier (-i or --ids)")
         sys.exit(1)
 
-    if not ids:
-        print("Error: must specify ID (-i or --ids)")
-        sys.exit(1)
-
-    # Execute via SourceRegistry (ZentaoSource) when type is specified
+    # Execute with auto-detect or explicit mode
     try:
-        registry = SourceRegistry()
-        zentao_source_cls = registry.get('zentao')
+        download_attachments = not (args.no_attachment and args.no_image)
 
-        if zentao_source_cls and args.type:
-            # Use new ZentaoSource via SourceRegistry
-            source = zentao_source_cls(config)
-            download_attachments = not (args.no_attachment and args.no_image)
+        if args.type:
+            # Explicit mode (backward compatible) - use -t flag
+            registry = SourceRegistry()
+            zentao_source_cls = registry.get('zentao')
 
-            for item_id in ids:
-                identifier = f"{args.type}-{item_id}"
-                worklet = source.fetch(identifier, download_attachments=download_attachments)
-                print(f"Fetched: {worklet.title}")
-            print("Done")
+            if zentao_source_cls:
+                source = zentao_source_cls(config)
+                for item_id in identifiers:
+                    id_str = f"{args.type}-{item_id}"
+                    worklet = source.fetch(id_str, download_attachments=download_attachments)
+                    print(f"Fetched: {worklet.title}")
+                print("Done")
+            else:
+                service = WorkletService(config)
+                service.execute(
+                    content_type=args.type,
+                    ids=[int(x) for x in identifiers],
+                    download_attachments=download_attachments
+                )
+                print("Done")
         else:
-            # Fallback to existing WorkletService
-            service = WorkletService(config)
-            service.execute(
-                content_type=args.type,
-                ids=ids,
-                download_attachments=not (args.no_attachment and args.no_image)
-            )
+            # Auto-detect mode - use InputParser to determine type
+            for identifier in identifiers:
+                source, resolved_id = resolve_source(identifier, config)
+                worklet = source.fetch(resolved_id, download_attachments=download_attachments)
+                print(f"Fetched: {worklet.title}")
             print("Done")
     except Exception as e:
         print(f"Error: {e}")

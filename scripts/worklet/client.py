@@ -1,48 +1,45 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-禅道数据抓取工具 - API客户端模块
+Worklet - API client module
 """
 
 import json
 import re
-from typing import List, Optional
 from urllib.parse import urljoin
 
 import requests
 
-from .config import ChandaoConfig
+from .config import WorkletConfig
 from .models import Attachment, Bug, Story, Task
 
 
-class ChandaoClient:
+class WorkletClient:
     """
-    禅道API客户端
+    Worklet API client
 
-    【安全约束】只允许查询操作，禁止新增/修改/删除
-    - 允许：登录、查看详情、下载附件
-    - 禁止：创建、更新、删除、指派、关闭等写操作
+    Safety constraint: read-only operations only
+    - Allowed: login, view details, download attachments
+    - Forbidden: create, update, delete, assign, close, etc.
     """
 
-    def __init__(self, config: ChandaoConfig):
+    def __init__(self, config: WorkletConfig):
         self.config = config
         self.session = requests.Session()
         self.logged_in = False
 
-        # 设置超时
         self.session.timeout = (
             config.connect_timeout / 1000,
             config.read_timeout / 1000,
         )
 
-        # 设置请求头
         self.session.headers.update({
-            "User-Agent": "ChandaoFetch-Python/1.0",
+            "User-Agent": "Worklet/2.0",
             "Accept": "application/json",
         })
 
     def login(self) -> bool:
-        """登录禅道"""
+        """Login to Zentao"""
         if self.logged_in:
             return True
 
@@ -56,50 +53,49 @@ class ChandaoClient:
 
         response = self.session.post(url, data=data)
         if not response.ok:
-            raise Exception(f"登录失败: HTTP {response.status_code}")
+            raise Exception(f"Login failed: HTTP {response.status_code}")
 
         result = response.json()
 
         if result.get("result") == "success" or result.get("status") == "success":
             self.logged_in = True
-            print(f"登录成功: {self.config.username}")
+            print(f"Logged in: {self.config.username}")
             return True
         else:
-            message = result.get("message", "未知错误")
-            raise Exception(f"登录失败: {message}")
+            message = result.get("message", "Unknown error")
+            raise Exception(f"Login failed: {message}")
 
     def _ensure_logged_in(self):
-        """确保已登录"""
+        """Ensure logged in before making requests"""
         if not self.logged_in:
             self.login()
 
     def _fetch_json(self, url: str) -> dict:
-        """获取JSON数据"""
+        """Fetch JSON data"""
         self._ensure_logged_in()
         response = self.session.get(url)
         if not response.ok:
-            raise Exception(f"请求失败: {url} HTTP {response.status_code}")
+            raise Exception(f"Request failed: {url} HTTP {response.status_code}")
         return response.json()
 
-    def _parse_attachments(self, files_data: dict) -> List[Attachment]:
-        """解析附件列表"""
+    def _parse_attachments(self, files_data: dict) -> list[Attachment]:
+        """Parse attachment list"""
         attachments = []
         if files_data and isinstance(files_data, dict):
             for file_data in files_data.values():
                 try:
                     attachments.append(Attachment.from_dict(file_data))
                 except Exception as e:
-                    print(f"解析附件失败: {e}")
+                    print(f"Failed to parse attachment: {e}")
         return attachments
 
     def get_story(self, story_id: int) -> Story:
-        """获取需求详情"""
+        """Get story details"""
         self._ensure_logged_in()
 
         url = urljoin(self.config.base_url, f"/story-view-{story_id}.json")
         body = self._fetch_json(url)
 
-        # 解析响应数据
         data = body.get("data", body)
         if isinstance(data, str):
             data = json.loads(data)
@@ -132,29 +128,25 @@ class ChandaoClient:
             deleted=story_node.get("deleted"),
         )
 
-        # 解析附件
         if "files" in story_node:
             story.attachments = self._parse_attachments(story_node["files"])
 
-        # 解析产品名称
         if "product" in data and isinstance(data["product"], dict):
             story.product_name = data["product"].get("name")
 
-        # 解析模块名称
         if "storyModule" in data and isinstance(data["storyModule"], dict):
             story.module_name = data["storyModule"].get("name")
 
-        print(f"获取需求: {story_id} - {story.title}")
+        print(f"Fetched story: {story_id} - {story.title}")
         return story
 
     def get_task(self, task_id: int) -> Task:
-        """获取任务详情"""
+        """Get task details"""
         self._ensure_logged_in()
 
         url = urljoin(self.config.base_url, f"/task-view-{task_id}.json")
         body = self._fetch_json(url)
 
-        # 解析响应数据
         data = body.get("data", body)
         if isinstance(data, str):
             data = json.loads(data)
@@ -189,21 +181,19 @@ class ChandaoClient:
             deleted=task_node.get("deleted"),
         )
 
-        # 解析附件
         if "files" in task_node:
             task.attachments = self._parse_attachments(task_node["files"])
 
-        print(f"获取任务: {task_id} - {task.name}")
+        print(f"Fetched task: {task_id} - {task.name}")
         return task
 
     def get_bug(self, bug_id: int) -> Bug:
-        """获取Bug详情"""
+        """Get bug details"""
         self._ensure_logged_in()
 
         url = urljoin(self.config.base_url, f"/bug-view-{bug_id}.json")
         body = self._fetch_json(url)
 
-        # 解析响应数据
         data = body.get("data", body)
         if isinstance(data, str):
             data = json.loads(data)
@@ -234,27 +224,26 @@ class ChandaoClient:
             deleted=bug_node.get("deleted"),
         )
 
-        # 解析附件
         if "files" in bug_node:
             bug.attachments = self._parse_attachments(bug_node["files"])
 
-        print(f"获取Bug: {bug_id} - {bug.title}")
+        print(f"Fetched bug: {bug_id} - {bug.title}")
         return bug
 
     def download_attachment(self, attachment_id: int) -> bytes:
-        """下载附件"""
+        """Download attachment"""
         self._ensure_logged_in()
 
         url = urljoin(self.config.base_url, f"/file-download-{attachment_id}.json")
         response = self.session.get(url)
 
         if not response.ok:
-            raise Exception(f"下载附件失败: HTTP {response.status_code}")
+            raise Exception(f"Download failed: HTTP {response.status_code}")
 
         return response.content
 
     def download_image(self, image_path: str) -> bytes:
-        """下载图片"""
+        """Download image"""
         self._ensure_logged_in()
 
         if image_path.startswith("http"):
@@ -264,6 +253,6 @@ class ChandaoClient:
 
         response = self.session.get(url)
         if not response.ok:
-            raise Exception(f"下载图片失败: HTTP {response.status_code}")
+            raise Exception(f"Image download failed: HTTP {response.status_code}")
 
         return response.content

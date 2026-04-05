@@ -1,26 +1,25 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-禅道数据抓取工具 - 数据模型
+Worklet - data models
 """
 
 from dataclasses import dataclass, field
-from typing import List, Optional
 
 
 @dataclass
 class Attachment:
-    """附件实体"""
-    id: Optional[int] = None
-    title: Optional[str] = None
-    pathname: Optional[str] = None
-    extension: Optional[str] = None
-    size: Optional[int] = None
-    local_path: Optional[str] = None
+    """Attachment entity"""
+    id: int | None = None
+    title: str | None = None
+    pathname: str | None = None
+    extension: str | None = None
+    size: int | None = None
+    local_path: str | None = None
 
     @property
     def file_name(self) -> str:
-        """获取文件名"""
+        """Get file name"""
         if self.title and self.extension:
             return f"{self.title}.{self.extension}"
         if self.pathname:
@@ -28,13 +27,13 @@ class Attachment:
         return "unknown"
 
     def is_image(self) -> bool:
-        """判断是否为图片"""
+        """Check if attachment is an image"""
         image_extensions = {"jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"}
         return self.extension and self.extension.lower() in image_extensions
 
     @classmethod
     def from_dict(cls, data: dict) -> "Attachment":
-        """从字典创建实例"""
+        """Create instance from dict"""
         return cls(
             id=data.get("id"),
             title=data.get("title"),
@@ -46,41 +45,41 @@ class Attachment:
 
 @dataclass
 class Story:
-    """需求实体"""
-    id: Optional[int] = None
-    title: Optional[str] = None
-    spec: Optional[str] = None
-    verify: Optional[str] = None
-    status: Optional[str] = None
-    stage: Optional[str] = None
-    pri: Optional[str] = None
-    source: Optional[str] = None
-    category: Optional[str] = None
-    product: Optional[int] = None
-    module: Optional[int] = None
-    plan: Optional[int] = None
-    project: Optional[int] = None
-    opened_by: Optional[str] = None
-    opened_date: Optional[str] = None
-    assigned_to: Optional[str] = None
-    assigned_date: Optional[str] = None
-    closed_by: Optional[str] = None
-    closed_date: Optional[str] = None
-    closed_reason: Optional[str] = None
-    parent: Optional[int] = None
-    version: Optional[str] = None
-    deleted: Optional[str] = None
+    """Story entity"""
+    id: int | None = None
+    title: str | None = None
+    spec: str | None = None
+    verify: str | None = None
+    status: str | None = None
+    stage: str | None = None
+    pri: str | None = None
+    source: str | None = None
+    category: str | None = None
+    product: int | None = None
+    module: int | None = None
+    plan: int | None = None
+    project: int | None = None
+    opened_by: str | None = None
+    opened_date: str | None = None
+    assigned_to: str | None = None
+    assigned_date: str | None = None
+    closed_by: str | None = None
+    closed_date: str | None = None
+    closed_reason: str | None = None
+    parent: int | None = None
+    version: str | None = None
+    deleted: str | None = None
 
-    # 扩展字段
-    product_name: Optional[str] = None
-    module_name: Optional[str] = None
-    project_name: Optional[str] = None
-    attachments: List[Attachment] = field(default_factory=list)
-    image_urls: List[str] = field(default_factory=list)
+    # Extended fields
+    product_name: str | None = None
+    module_name: str | None = None
+    project_name: str | None = None
+    attachments: list[Attachment] = field(default_factory=list)
+    image_urls: list[str] = field(default_factory=list)
 
     @classmethod
     def from_dict(cls, data: dict) -> "Story":
-        """从字典创建实例"""
+        """Create instance from dict"""
         story = cls(
             id=data.get("id"),
             title=data.get("title"),
@@ -107,7 +106,6 @@ class Story:
             deleted=data.get("deleted"),
         )
 
-        # 解析附件
         if "files" in data and isinstance(data["files"], dict):
             story.attachments = [
                 Attachment.from_dict(f) for f in data["files"].values()
@@ -118,43 +116,43 @@ class Story:
 
 @dataclass
 class Task:
-    """任务实体"""
-    id: Optional[int] = None
-    name: Optional[str] = None
-    desc: Optional[str] = None
-    status: Optional[str] = None
-    type: Optional[str] = None
-    pri: Optional[str] = None
-    project: Optional[int] = None
-    module: Optional[int] = None
-    story: Optional[int] = None
-    story_version: Optional[int] = None
-    parent: Optional[int] = None
-    opened_by: Optional[str] = None
-    opened_date: Optional[str] = None
-    assigned_to: Optional[str] = None
-    assigned_date: Optional[str] = None
-    finished_by: Optional[str] = None
-    finished_date: Optional[str] = None
-    closed_by: Optional[str] = None
-    closed_date: Optional[str] = None
-    closed_reason: Optional[str] = None
-    estimate: Optional[float] = None
-    consumed: Optional[float] = None
-    left: Optional[float] = None
-    deadline: Optional[str] = None
-    deleted: Optional[str] = None
+    """Task entity"""
+    id: int | None = None
+    name: str | None = None
+    desc: str | None = None
+    status: str | None = None
+    type: str | None = None
+    pri: str | None = None
+    project: int | None = None
+    module: int | None = None
+    story: int | None = None
+    story_version: int | None = None
+    parent: int | None = None
+    opened_by: str | None = None
+    opened_date: str | None = None
+    assigned_to: str | None = None
+    assigned_date: str | None = None
+    finished_by: str | None = None
+    finished_date: str | None = None
+    closed_by: str | None = None
+    closed_date: str | None = None
+    closed_reason: str | None = None
+    estimate: float | None = None
+    consumed: float | None = None
+    left: float | None = None
+    deadline: str | None = None
+    deleted: str | None = None
 
-    # 扩展字段
-    project_name: Optional[str] = None
-    module_name: Optional[str] = None
-    story_title: Optional[str] = None
-    attachments: List[Attachment] = field(default_factory=list)
-    image_urls: List[str] = field(default_factory=list)
+    # Extended fields
+    project_name: str | None = None
+    module_name: str | None = None
+    story_title: str | None = None
+    attachments: list[Attachment] = field(default_factory=list)
+    image_urls: list[str] = field(default_factory=list)
 
     @classmethod
     def from_dict(cls, data: dict) -> "Task":
-        """从字典创建实例"""
+        """Create instance from dict"""
         task = cls(
             id=data.get("id"),
             name=data.get("name"),
@@ -183,7 +181,6 @@ class Task:
             deleted=data.get("deleted"),
         )
 
-        # 解析附件
         if "files" in data and isinstance(data["files"], dict):
             task.attachments = [
                 Attachment.from_dict(f) for f in data["files"].values()
@@ -194,40 +191,40 @@ class Task:
 
 @dataclass
 class Bug:
-    """Bug实体"""
-    id: Optional[int] = None
-    title: Optional[str] = None
-    steps: Optional[str] = None
-    status: Optional[str] = None
-    severity: Optional[str] = None
-    pri: Optional[str] = None
-    type: Optional[str] = None
-    product: Optional[int] = None
-    module: Optional[int] = None
-    project: Optional[int] = None
-    story: Optional[int] = None
-    opened_by: Optional[str] = None
-    opened_date: Optional[str] = None
-    assigned_to: Optional[str] = None
-    assigned_date: Optional[str] = None
-    resolved_by: Optional[str] = None
-    resolved_date: Optional[str] = None
-    resolution: Optional[str] = None
-    closed_by: Optional[str] = None
-    closed_date: Optional[str] = None
-    deleted: Optional[str] = None
+    """Bug entity"""
+    id: int | None = None
+    title: str | None = None
+    steps: str | None = None
+    status: str | None = None
+    severity: str | None = None
+    pri: str | None = None
+    type: str | None = None
+    product: int | None = None
+    module: int | None = None
+    project: int | None = None
+    story: int | None = None
+    opened_by: str | None = None
+    opened_date: str | None = None
+    assigned_to: str | None = None
+    assigned_date: str | None = None
+    resolved_by: str | None = None
+    resolved_date: str | None = None
+    resolution: str | None = None
+    closed_by: str | None = None
+    closed_date: str | None = None
+    deleted: str | None = None
 
-    # 扩展字段
-    product_name: Optional[str] = None
-    module_name: Optional[str] = None
-    project_name: Optional[str] = None
-    story_title: Optional[str] = None
-    attachments: List[Attachment] = field(default_factory=list)
-    image_urls: List[str] = field(default_factory=list)
+    # Extended fields
+    product_name: str | None = None
+    module_name: str | None = None
+    project_name: str | None = None
+    story_title: str | None = None
+    attachments: list[Attachment] = field(default_factory=list)
+    image_urls: list[str] = field(default_factory=list)
 
     @classmethod
     def from_dict(cls, data: dict) -> "Bug":
-        """从字典创建实例"""
+        """Create instance from dict"""
         bug = cls(
             id=data.get("id"),
             title=data.get("title"),
@@ -252,7 +249,6 @@ class Bug:
             deleted=data.get("deleted"),
         )
 
-        # 解析附件
         if "files" in data and isinstance(data["files"], dict):
             bug.attachments = [
                 Attachment.from_dict(f) for f in data["files"].values()

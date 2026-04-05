@@ -1,53 +1,51 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-禅道数据抓取工具 - 配置管理模块
+Worklet - configuration management
 
-配置优先级：
-1. 命令行参数（最高）
-2. 工作区配置：{工作区}/.chandao/config.properties
-3. 全局配置：~/.chandao/config.properties（最低）
+Config priority:
+1. CLI arguments (highest)
+2. Workspace config: {workspace}/.chandao/config.properties
+3. Global config: ~/.chandao/config.properties (lowest)
 
-存储目录：
-- 默认使用当前工作区根目录
-- 不持久化到配置文件，每次运行时动态确定
+Storage directory:
+- Default: current workspace root
+- Not persisted to config file, determined dynamically at runtime
 """
 
 import os
 from pathlib import Path
-from typing import Optional, List
 
 
-class ChandaoConfig:
-    """禅道配置管理"""
+class WorkletConfig:
+    """Worklet configuration manager"""
 
-    # 配置文件位置
+    # Config file locations
     WORKSPACE_CONFIG = ".chandao/config.properties"
     GLOBAL_CONFIG = "~/.chandao/config.properties"
 
     def __init__(self):
-        self.base_url: Optional[str] = None
-        self.username: Optional[str] = None
-        self.password: Optional[str] = None
-        self.output_dir: str = os.getcwd()  # 默认当前目录
-        self.connect_timeout: int = 30000  # 毫秒
-        self.read_timeout: int = 60000  # 毫秒
-        self._config_source: Optional[str] = None  # 记录配置来源
+        self.base_url: str | None = None
+        self.username: str | None = None
+        self.password: str | None = None
+        self.output_dir: str = os.getcwd()
+        self.connect_timeout: int = 30000  # milliseconds
+        self.read_timeout: int = 60000  # milliseconds
+        self._config_source: str | None = None
 
     @classmethod
-    def load(cls, workspace_dir: Optional[str] = None, config_path: Optional[str] = None) -> "ChandaoConfig":
-        """加载配置文件
+    def load(cls, workspace_dir: str | None = None, config_path: str | None = None) -> "WorkletConfig":
+        """Load configuration
 
         Args:
-            workspace_dir: 工作区目录，用于查找工作区配置文件
-            config_path: 指定的配置文件路径（最高优先级）
+            workspace_dir: workspace directory for workspace config lookup
+            config_path: specified config file path (highest priority)
 
         Returns:
-            ChandaoConfig 实例
+            WorkletConfig instance
         """
         config = cls()
 
-        # 按优先级加载配置
         config_files = cls._get_config_files(workspace_dir, config_path)
 
         for path in config_files:
@@ -56,7 +54,6 @@ class ChandaoConfig:
                 config._config_source = str(path)
                 break
 
-        # 设置默认输出目录为工作区目录
         if workspace_dir and not config.output_dir:
             config.output_dir = workspace_dir
         elif not config.output_dir:
@@ -65,27 +62,24 @@ class ChandaoConfig:
         return config
 
     @classmethod
-    def _get_config_files(cls, workspace_dir: Optional[str], config_path: Optional[str]) -> List[Path]:
-        """获取配置文件列表，按优先级排序"""
+    def _get_config_files(cls, workspace_dir: str | None, config_path: str | None) -> list[Path]:
+        """Get config file list in priority order"""
         files = []
 
-        # 1. 指定的配置文件（最高优先级）
         if config_path:
             files.append(Path(config_path))
 
-        # 2. 工作区配置文件
         if workspace_dir:
             workspace_config = Path(workspace_dir) / cls.WORKSPACE_CONFIG
             files.append(workspace_config)
 
-        # 3. 全局配置文件（最低优先级）
         global_config = Path.home() / ".chandao" / "config.properties"
         files.append(global_config)
 
         return files
 
     def _load_from_file(self, path: Path):
-        """从文件加载配置"""
+        """Load config from file"""
         try:
             with open(path, "r", encoding="utf-8") as f:
                 for line in f:
@@ -103,31 +97,30 @@ class ChandaoConfig:
                             self.username = value
                         elif key == "zentao.password":
                             self.password = value
-                        # 注意：output.dir 不从配置文件加载，每次运行时动态确定
 
-            print(f"已加载配置文件: {path}")
+            print(f"Loaded config: {path}")
         except Exception as e:
-            print(f"加载配置文件失败: {e}")
+            print(f"Failed to load config: {e}")
 
     def save_to_workspace(self, workspace_dir: str):
-        """保存配置到工作区"""
+        """Save config to workspace"""
         path = Path(workspace_dir) / self.WORKSPACE_CONFIG
         self._save_to_file(path)
-        print(f"配置已保存到工作区: {path}")
+        print(f"Config saved to workspace: {path}")
 
     def save_to_global(self):
-        """保存配置到全局位置"""
+        """Save config to global location"""
         path = Path.home() / ".chandao" / "config.properties"
         self._save_to_file(path)
-        print(f"配置已保存到全局: {path}")
+        print(f"Config saved to global: {path}")
 
     def _save_to_file(self, path: Path):
-        """保存配置到指定文件"""
+        """Save config to specified file"""
         path.parent.mkdir(parents=True, exist_ok=True)
 
         with open(path, "w", encoding="utf-8") as f:
-            f.write("# 禅道配置文件\n")
-            f.write("# 说明：存储目录(output.dir)不保存到配置文件，每次运行时动态确定\n")
+            f.write("# Worklet config\n")
+            f.write("# Note: output.dir is not persisted, determined at runtime\n")
             if self.base_url:
                 f.write(f"zentao.url={self.base_url}\n")
             if self.username:
@@ -136,31 +129,31 @@ class ChandaoConfig:
                 f.write(f"zentao.password={self.password}\n")
 
     def is_initialized(self) -> bool:
-        """检查配置是否已初始化"""
+        """Check if config is initialized"""
         return all([self.base_url, self.username, self.password])
 
-    def get_config_source(self) -> Optional[str]:
-        """获取配置来源"""
+    def get_config_source(self) -> str | None:
+        """Get config source"""
         return self._config_source
 
     def get_init_prompt(self) -> str:
-        """获取初始化提示信息"""
+        """Get initialization prompt"""
         if self.is_initialized():
             return None
 
-        prompt = """禅道配置未初始化！请通过以下方式之一提供配置：
+        prompt = """Worklet config not initialized. Please provide config via one of:
 
-方式一：命令行参数
-  python chandao_fetch.py --url <禅道地址> --username <用户名> --password <密码>
+Method 1: CLI arguments
+  python worklet.py --url <zentao_url> --username <user> --password <pass>
 
-方式二：工作区配置文件（推荐，支持多项目）
-  在工作区根目录创建 .chandao/config.properties 文件：
+Method 2: Workspace config file (recommended for multi-project)
+  Create .chandao/config.properties in workspace root:
   zentao.url=https://your-zentao-server.com
   zentao.username=your_username
   zentao.password=your_password
 
-方式三：全局配置文件（所有项目共享）
-  在用户目录创建 ~/.chandao/config.properties 文件
+Method 3: Global config (shared across all projects)
+  Create ~/.chandao/config.properties
 
-注意：存储目录不保存到配置文件，每次运行时动态确定。"""
+Note: output.dir is not persisted to config, determined at runtime."""
         return prompt

@@ -1,4 +1,6 @@
-# 禅道数据抓取工具 - Python依赖
-# 仅需要 requests 库，无其他外部依赖
+# Worklet - Python dependencies
+# For SKILL.md pip install compatibility (pyproject.toml is the canonical source)
 
-requests>=2.28.0
+requests>=2.32.0
+tomli>=2.0.0
+tomli-w>=1.0.0

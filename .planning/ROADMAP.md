@@ -107,5 +107,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 | 1. Foundation and Rename | 3/4 | In Progress|  |
 | 2. Core Pipeline | 6/7 | In Progress|  |
 | 3. Extended Sources and Testing | 3/4 | In Progress|  |
-| 4. Pipeline Assembly and CLI | 0/? | Not started | - |
+| 4. Pipeline Assembly and CLI | 1/2 | In Progress|  |
 | 5. SKILL.md Rewrite and Release | 0/? | Not started | - |

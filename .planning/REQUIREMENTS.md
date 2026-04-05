@@ -54,10 +54,10 @@ Requirements for v2.0.0 release. Each maps to roadmap phases.
 
 ### Environment & Config (ENV)
 
-- [ ] **ENV-01**: 环境检测优化：先试后检（直接运行工具，失败再检测安装）
-- [ ] **ENV-02**: 环境检测缓存：成功后写入 .worklet/config.properties 标记，24h TTL
-- [ ] **ENV-03**: superpowers 安装方式升级为 npx，检测用 capability-based 方式
-- [ ] **ENV-04**: 移除 Java 环境检测，仅保留 Python
+- [x] **ENV-01**: 环境检测优化：先试后检（直接运行工具，失败再检测安装）
+- [x] **ENV-02**: 环境检测缓存：成功后写入 .worklet/config.properties 标记，24h TTL
+- [x] **ENV-03**: superpowers 安装方式升级为 npx，检测用 capability-based 方式
+- [x] **ENV-04**: 移除 Java 环境检测，仅保留 Python
 
 ### Trigger & SKILL (SKILL)
 
@@ -170,10 +170,10 @@ Deferred to future release. Tracked but not in current roadmap.
 | TEST-05 | Phase 3 | Complete |
 | TEST-06 | Phase 3 | Complete |
 | INPUT-09 | Phase 4 | Pending |
-| ENV-01 | Phase 4 | Pending |
-| ENV-02 | Phase 4 | Pending |
-| ENV-03 | Phase 4 | Pending |
-| ENV-04 | Phase 4 | Pending |
+| ENV-01 | Phase 4 | Complete |
+| ENV-02 | Phase 4 | Complete |
+| ENV-03 | Phase 4 | Complete |
+| ENV-04 | Phase 4 | Complete |
 | SKILL-01 | Phase 5 | Pending |
 | SKILL-02 | Phase 5 | Pending |
 | SKILL-03 | Phase 5 | Pending |

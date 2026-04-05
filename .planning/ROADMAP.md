@@ -83,7 +83,7 @@ Plans:
   2. Environment detection uses try-first-check-later strategy and caches successful results in .worklet/config.properties with 24h TTL
   3. superpowers is detected and installed via npx (not `claude plugins add`)
   4. No Java environment detection code remains
-**Plans**: TBD
+**Plans**: 3/3 plans created
 
 ### Phase 5: SKILL.md Rewrite and Release
 **Goal**: Worklet is installable as a Claude Code Skill with correct trigger keywords, updated documentation, and a published GitHub release
@@ -95,7 +95,7 @@ Plans:
   3. CLAUDE.md, CONTRIBUTING.md, README.md, and reference docs all reflect the Worklet name and v2.0.0 architecture
   4. release.yml produces a clean release artifact with no Java files and correct directory structure
   5. GitHub repository is renamed to "worklet"
-**Plans**: TBD
+**Plans**: 3/3 plans created
 
 ## Progress
 
@@ -108,4 +108,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 | 2. Core Pipeline | 6/7 | In Progress|  |
 | 3. Extended Sources and Testing | 3/4 | In Progress|  |
 | 4. Pipeline Assembly and CLI | 1/2 | In Progress|  |
-| 5. SKILL.md Rewrite and Release | 0/? | Not started | - |
+| 5. SKILL.md Rewrite and Release | 3/3 | Ready for execution | - |

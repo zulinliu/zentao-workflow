@@ -5,7 +5,11 @@ Worklet - API client module
 """
 
 import json
+import os
 import re
+import shutil
+import tempfile
+from pathlib import Path
 from urllib.parse import urljoin
 
 import requests
@@ -230,13 +234,15 @@ class WorkletClient:
         print(f"Fetched bug: {bug_id} - {bug.title}")
         return bug
 
-    def download_attachment(self, attachment_id: int, timeout: tuple[float, float] | float | None = None) -> bytes:
-        """Download attachment with streaming and timeout.
+    def download_attachment(self, attachment_id: int, timeout: tuple[float, float] | float | None = None, dest: Path | None = None) -> bytes | None:
+        """Download attachment with streaming and atomic write support.
 
         Args:
             attachment_id: Attachment ID
             timeout: Optional timeout in seconds (connect, read) or single value.
                      Defaults to session timeout if None.
+            dest: Optional destination path. If provided, writes atomically to a temp
+                  file then renames to dest. If None, returns bytes.
         """
         self._ensure_logged_in()
 
@@ -252,7 +258,30 @@ class WorkletClient:
         except requests.exceptions.HTTPError as e:
             raise requests.exceptions.HTTPError(f"Attachment download failed (ID={attachment_id}): {e}") from None
 
-        return response.content
+        if dest is None:
+            return response.content
+
+        # Atomic write: stream to temp file in same directory, then rename
+        tmp_file = None
+        tmp_name = None
+        try:
+            tmp_file = tempfile.NamedTemporaryFile(
+                mode="wb",
+                dir=dest.parent,
+                suffix=".tmp",
+                delete=False,
+            )
+            tmp_name = tmp_file.name
+            shutil.copyfileobj(response.raw, tmp_file)
+            tmp_file.close()
+            os.replace(tmp_name, dest)
+        except Exception:
+            # Clean up temp file on failure
+            if tmp_name is not None:
+                Path(tmp_name).unlink(missing_ok=True)
+            raise
+
+        return None
 
     def download_image(self, image_path: str, timeout: tuple[float, float] | float | None = None) -> bytes:
         """Download image with timeout.

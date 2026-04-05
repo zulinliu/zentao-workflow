@@ -15,6 +15,42 @@ import sys
 
 from .config import WorkletConfig
 from .service import WorkletService
+from .sources.base import SourceRegistry
+from .sources.zentao import ZentaoSource
+
+
+def detect_input_type(identifier: str) -> str:
+    """Detect input type.
+
+    Returns:
+        'zentao' for Zentao ID format
+        'file' for existing file
+        'folder' for existing directory
+        'unknown' if cannot determine
+    """
+    from pathlib import Path
+
+    identifier = identifier.strip()
+
+    # Check Zentao ID patterns
+    if '-' in identifier:
+        prefix = identifier.split('-')[0].lower()
+        if prefix in ('story', 'task', 'bug'):
+            try:
+                int(identifier.split('-')[1])
+                return 'zentao'
+            except ValueError:
+                pass
+
+    # Check if it's a file or folder
+    path = Path(identifier)
+    if path.exists():
+        if path.is_file():
+            return 'file'
+        elif path.is_dir():
+            return 'folder'
+
+    return 'unknown'
 
 
 def parse_args():
@@ -126,15 +162,30 @@ def main():
         print("Error: must specify ID (-i or --ids)")
         sys.exit(1)
 
-    # Execute service
+    # Execute via SourceRegistry (ZentaoSource) when type is specified
     try:
-        service = WorkletService(config)
-        service.execute(
-            content_type=args.type,
-            ids=ids,
-            download_attachments=not (args.no_attachment and args.no_image)
-        )
-        print("Done")
+        registry = SourceRegistry()
+        zentao_source_cls = registry.get('zentao')
+
+        if zentao_source_cls and args.type:
+            # Use new ZentaoSource via SourceRegistry
+            source = zentao_source_cls(config)
+            download_attachments = not (args.no_attachment and args.no_image)
+
+            for item_id in ids:
+                identifier = f"{args.type}-{item_id}"
+                worklet = source.fetch(identifier, download_attachments=download_attachments)
+                print(f"Fetched: {worklet.title}")
+            print("Done")
+        else:
+            # Fallback to existing WorkletService
+            service = WorkletService(config)
+            service.execute(
+                content_type=args.type,
+                ids=ids,
+                download_attachments=not (args.no_attachment and args.no_image)
+            )
+            print("Done")
     except Exception as e:
         print(f"Error: {e}")
         if args.verbose:

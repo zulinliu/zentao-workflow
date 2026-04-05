@@ -4,3 +4,4 @@
 requests>=2.32.0
 tomli>=2.0.0
 tomli-w>=1.0.0
+markdownify>=0.18.0

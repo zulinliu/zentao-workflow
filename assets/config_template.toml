@@ -1,0 +1,29 @@
+# Worklet configuration template
+# Save to: .worklet/config.toml (workspace) or ~/.worklet/config.toml (global)
+
+# ==================== Required ====================
+
+[zentao]
+# Zentao server URL
+# Example: https://zentao.example.com
+url = ""
+
+# Login username
+username = ""
+
+# Login password
+password = ""
+
+# ==================== Optional ====================
+
+[output]
+# Output directory (default: .worklet/ under workspace root)
+# Example: ~/worklet or /path/to/workspace/.worklet
+dir = ".worklet/"
+
+[network]
+# Connection timeout in seconds (default: 30)
+connect_timeout = 30
+
+# Read timeout in seconds (default: 60)
+read_timeout = 60

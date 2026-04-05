@@ -4,7 +4,9 @@
 Worklet - data models
 """
 
+from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
+from pathlib import Path
 
 
 @dataclass
@@ -16,6 +18,7 @@ class Attachment:
     extension: str | None = None
     size: int | None = None
     local_path: str | None = None
+    path: Path | None = None  # New v2.0 field: resolved local filesystem path
 
     @property
     def file_name(self) -> str:
@@ -255,3 +258,53 @@ class Bug:
             ]
 
         return bug
+
+
+# --- New v2.0 unified models (placeholders for Phase 2) ---
+
+
+@dataclass
+class RawContent:
+    """Raw content from any source, before normalization."""
+    raw: str
+    format: str  # 'html', 'markdown', 'text'
+
+
+@dataclass
+class Worklet:
+    """Unified work item model for all source types.
+
+    This is the normalized output that all sources produce.
+    Phase 2 will implement the full pipeline.
+    """
+    id: str
+    title: str
+    content: str  # markdown
+    source_type: str  # 'zentao', 'file', 'folder'
+    attachments: list[Attachment] = field(default_factory=list)
+    metadata: dict = field(default_factory=dict)
+
+
+class BaseSource(ABC):
+    """Abstract base for all data sources.
+
+    Implementations (Phase 2+):
+    - ZentaoSource: Fetches from Zentao API
+    - FileSource: Reads local files
+    - FolderSource: Scans directories
+    """
+    @abstractmethod
+    def fetch(self, identifier: str) -> Worklet: ...
+
+
+class BaseReader(ABC):
+    """Abstract base for file format readers.
+
+    Implementations (Phase 3+):
+    - MarkdownReader: .md/.txt files
+    - PdfReader: .pdf files (via pypdf)
+    - DocxReader: .docx files (via python-docx)
+    - ImageReader: image files (copy + reference)
+    """
+    @abstractmethod
+    def read(self, path: Path) -> RawContent: ...

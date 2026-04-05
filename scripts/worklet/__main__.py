@@ -14,6 +14,7 @@ import os
 import sys
 
 from .config import WorkletConfig
+from .env import EnvDetector
 from .service import WorkletService
 from .sources.base import SourceRegistry
 from .sources.zentao import ZentaoSource
@@ -141,6 +142,15 @@ def main():
     if not config.is_initialized():
         print(config.get_init_prompt())
         sys.exit(1)
+
+    # Environment detection with caching (ENV-01, ENV-02, ENV-03)
+    env_detector = EnvDetector()
+    env_result = env_detector.detect()
+
+    if env_result.superpowers_available:
+        print(f"[ENV] superpowers {env_result.superpowers_version} available")
+    else:
+        print("[ENV] superpowers not available, using basic mode")
 
     # Save config if new credentials provided
     if args.url or args.username or args.password:
